@@ -115,7 +115,9 @@ async fn main() {
             Fetcher {
                 client: fairy_render::reqwest::Client::new(),
             },
-            RouteMap::default(),
+            RouteMap::default()
+                .map("solid", "/solid")
+                .map("react", "/react"),
         )
         .await;
 

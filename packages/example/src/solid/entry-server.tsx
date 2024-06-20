@@ -1,4 +1,4 @@
-import { render } from "@fairy-render/solid";
+import { render } from "@fairy-render/solid/server";
 import App from "./app.jsx";
 
 export default async function server(req: Request) {

@@ -185,7 +185,7 @@ pub struct ManifestEntry {
     is_entry: bool,
     #[serde(default)]
     imports: Vec<String>,
-    src: String,
+    // src: String,
 }
 
 type Manifest = HashMap<String, ManifestEntry>;

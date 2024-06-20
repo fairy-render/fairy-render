@@ -1,0 +1,21 @@
+{
+  "workDir": "/home/rasmus/Development/fairy/fairy-render/packages/example",
+  "root": "dist",
+  "entries": {
+    "solid": {
+      "client": "src/solid/entry-client.tsx",
+      "server": "src/solid/entry-server.tsx"
+    },
+    "react": {
+      "client": "src/react/entry-client.tsx",
+      "server": "src/react/entry-server.tsx"
+    }
+  },
+  "base": "/",
+  "port": 3768,
+  "assets": "assets",
+  "assetsPath": "/assets",
+  "clientManifest": "client/.vite/manifest.json",
+  "serverManifest": "server/.vite/manifest.json",
+  "ssrManifest": "client/.vite/ssr-manifest.json"
+}
