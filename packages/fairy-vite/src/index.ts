@@ -1,13 +1,4 @@
-import type { ImportExpression, Literal } from "estree";
-import { asyncWalk } from "estree-walker";
-import MagicString from "magic-string";
-import {
-	createFilter,
-	type UserConfig,
-	type Plugin,
-	type ConfigEnv,
-} from "vite";
-import { normalizePath } from "@rollup/pluginutils";
+import type { Plugin, ConfigEnv } from "vite";
 import Path from "node:path";
 
 const defaultExtensions = [
@@ -29,14 +20,9 @@ export interface Options {
 
 export default function ({
 	extensions = defaultExtensions,
-	include = [],
-	exclude = [],
 }: Options = {}): Plugin {
 	const filterRe = new RegExp(`\\.(?:${extensions.join("|")})$`);
 
-	const filter = createFilter([filterRe, include].flat(), exclude);
-
-	// let config: Partial<UserConfig> & { command: string };
 	let environ: ConfigEnv;
 
 	const resolveDir = (env: ConfigEnv, ssr: boolean, path?: string) => {
@@ -75,10 +61,6 @@ export default function ({
 				right: `), "${key}")`,
 			};
 		},
-		// configResolved(cfg) {
-		//   config = cfg as any;
-		// },
-
 		apply(config, env) {
 			environ = env;
 			return env.command === "build";

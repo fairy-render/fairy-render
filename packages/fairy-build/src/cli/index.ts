@@ -23,6 +23,7 @@ export default function main() {
 		.command("print")
 		.option("-c, --config <path>", "config path", "")
 		.option("-p, --port <port>", "port", "3768")
+		.option("-o, --output <path>", "output directory", "")
 		.action(async (opts) => {
 			await print(opts);
 		});

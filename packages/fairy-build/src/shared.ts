@@ -107,5 +107,5 @@ export function createRuntimeConfigJson(cfg: RuntimeOptions) {
 		ssrManifest: "client/.vite/ssr-manifest.json",
 	};
 
-	console.log(JSON.stringify(opts, null, 2));
+	return opts;
 }

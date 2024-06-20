@@ -30,12 +30,6 @@
 		"typescript": "^5.2.2",
 		"vite": "^4.4.11"
 	},
-	"dependencies": {
-		"@rollup/pluginutils": "*",
-		"@types/estree": "^1.0.0",
-		"estree-walker": "^3.0.1",
-		"magic-string": "^0.30.5"
-	},
 	"peerDependencies": {
 		"vite": "^4.4.11"
 	}

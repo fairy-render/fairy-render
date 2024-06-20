@@ -1,9 +1,4 @@
-import { ImportExpression, Literal } from "estree";
-import { asyncWalk } from "estree-walker";
-import MagicString from "magic-string";
 import { createFilter, type UserConfig, type Plugin } from "vite";
-import { normalizePath } from "@rollup/pluginutils";
-import Path from "node:path";
 
 const defaultExtensions = [
 	"js",

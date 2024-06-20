@@ -7,7 +7,7 @@
 		"watch": "tsup --watch"
 	},
 	"bin": {
-		"fairy": "./fairy.js"
+		"fairy": "./bin/fairy.js"
 	},
 	"main": "./dist/index.cjs",
 	"module": "./dist/index.js",
