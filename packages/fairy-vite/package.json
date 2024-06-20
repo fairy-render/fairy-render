@@ -1,0 +1,42 @@
+{
+	"name": "@fairy-render/vite-plugin",
+	"version": "0.0.1",
+	"type": "commonjs",
+	"scripts": {
+		"build": "tsup",
+		"watch": "tsup --watch"
+	},
+	"main": "./dist/index.js",
+	"module": "./dist/index.mjs",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"import": "./dist/index.mjs",
+			"require": "./dist/index.js",
+			"types": "./dist/index.d.ts"
+		},
+		"./solid": {
+			"import": "./dist/solid.mjs",
+			"require": "./dist/solid.js",
+			"types": "./dist/solid.d.ts"
+		},
+		"./solid-client": {
+			"types": "./solid-client.d.ts"
+		}
+	},
+	"devDependencies": {
+		"@types/node": "^20.8.6",
+		"tsup": "^8.1.0",
+		"typescript": "^5.2.2",
+		"vite": "^4.4.11"
+	},
+	"dependencies": {
+		"@rollup/pluginutils": "*",
+		"@types/estree": "^1.0.0",
+		"estree-walker": "^3.0.1",
+		"magic-string": "^0.30.5"
+	},
+	"peerDependencies": {
+		"vite": "^4.4.11"
+	}
+}

@@ -1,0 +1,78 @@
+{
+	"$schema": "http://json-schema.org/draft-06/schema#",
+	"$ref": "#/definitions/Welcome",
+	"definitions": {
+		"Welcome": {
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"workDir": {
+					"type": "string"
+				},
+				"root": {
+					"type": "string"
+				},
+				"entries": {
+					"oneOf": [
+						{ "$ref": "#/definitions/Entry" },
+						{ "$ref": "#/definitions/Entries" }
+					]
+				},
+				"base": {
+					"type": "string"
+				},
+				"port": {
+					"type": "integer"
+				},
+				"assets": {
+					"type": "string"
+				},
+				"assetsPath": {
+					"type": "string"
+				},
+				"clientManifest": {
+					"type": "string"
+				},
+				"serverClient": {
+					"type": "string"
+				},
+				"ssrManifest": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"assets",
+				"assetsPath",
+				"base",
+				"clientManifest",
+				"entries",
+				"port",
+				"root",
+				"serverClient",
+				"ssrManifest",
+				"workDir"
+			],
+			"title": "Welcome"
+		},
+		"Entry": {
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"client": {
+					"type": "string"
+				},
+				"server": {
+					"type": "string"
+				}
+			},
+			"required": ["client", "server"],
+			"title": "Entry"
+		},
+		"Entries": {
+			"type": "object",
+			"additionalProperties": { "$ref": "#/definitions/Entry" },
+
+			"title": "Entries"
+		}
+	}
+}

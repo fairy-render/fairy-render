@@ -1,0 +1,4 @@
+[workspace]
+
+resolver = "2"
+members = [ "fairy-axum", "fairy-http","fairy-render"]

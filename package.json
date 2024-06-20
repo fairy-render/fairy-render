@@ -1,0 +1,13 @@
+{
+	"name": "fairy-render",
+	"private": true,
+	"scripts": {
+		"build": "pnpm run -r --filter @fairy-render/* build",
+		"watch": "pnpm run -r --filter @fairy-render/* watch",
+		"build-example": "pnpm run -r --filter example build",
+		"watch-example": "pnpm run -r --filter example dev"
+	},
+	"dependencies": {
+		"typescript": "^5.2.2"
+	}
+}
