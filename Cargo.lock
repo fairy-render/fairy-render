@@ -779,7 +779,7 @@ dependencies = [
 [[package]]
 name = "klaver-base"
 version = "0.1.0"
-source = "git+https://github.com/fairy-render/klaver#361fc9cdd305ad4d4b2b332df4d82008fcd16f6d"
+source = "git+https://github.com/fairy-render/klaver#1b37edf476a623e661052f7ebaa6f4e9db9d3138"
 dependencies = [
  "encoding_rs",
  "extensions",
@@ -793,7 +793,7 @@ dependencies = [
 [[package]]
 name = "klaver-compat"
 version = "0.1.0"
-source = "git+https://github.com/fairy-render/klaver#361fc9cdd305ad4d4b2b332df4d82008fcd16f6d"
+source = "git+https://github.com/fairy-render/klaver#1b37edf476a623e661052f7ebaa6f4e9db9d3138"
 dependencies = [
  "klaver-base",
  "rquickjs",
@@ -802,7 +802,7 @@ dependencies = [
 [[package]]
 name = "klaver-http"
 version = "0.1.0"
-source = "git+https://github.com/fairy-render/klaver#361fc9cdd305ad4d4b2b332df4d82008fcd16f6d"
+source = "git+https://github.com/fairy-render/klaver#1b37edf476a623e661052f7ebaa6f4e9db9d3138"
 dependencies = [
  "bytes",
  "futures",
@@ -816,7 +816,7 @@ dependencies = [
 [[package]]
 name = "klaver-module"
 version = "0.1.0"
-source = "git+https://github.com/fairy-render/klaver#361fc9cdd305ad4d4b2b332df4d82008fcd16f6d"
+source = "git+https://github.com/fairy-render/klaver#1b37edf476a623e661052f7ebaa6f4e9db9d3138"
 dependencies = [
  "relative-path",
  "rquickjs",
@@ -825,7 +825,7 @@ dependencies = [
 [[package]]
 name = "klaver-shared"
 version = "0.1.0"
-source = "git+https://github.com/fairy-render/klaver#361fc9cdd305ad4d4b2b332df4d82008fcd16f6d"
+source = "git+https://github.com/fairy-render/klaver#1b37edf476a623e661052f7ebaa6f4e9db9d3138"
 dependencies = [
  "locket",
 ]
@@ -833,7 +833,7 @@ dependencies = [
 [[package]]
 name = "klaver-worker"
 version = "0.1.0"
-source = "git+https://github.com/fairy-render/klaver#361fc9cdd305ad4d4b2b332df4d82008fcd16f6d"
+source = "git+https://github.com/fairy-render/klaver#1b37edf476a623e661052f7ebaa6f4e9db9d3138"
 dependencies = [
  "deadpool",
  "futures",
@@ -1172,7 +1172,7 @@ dependencies = [
 [[package]]
 name = "reggie"
 version = "0.1.0"
-source = "git+https://github.com/fairy-render/reggie#4a13b2067989c82b46d7f6959ca3b28b9e55d48c"
+source = "git+https://github.com/fairy-render/reggie#9e03f279d20089faf57cddc14752b332185be97b"
 dependencies = [
  "bytes",
  "futures-core",

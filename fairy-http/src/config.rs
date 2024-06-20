@@ -107,6 +107,7 @@ impl ViteConfig {
         F: HttpClientFactory + Send + Sync + Clone + 'static,
         F::Client<Body>: Send + Sync + 'static,
         <F::Client<Body> as HttpClient<Body>>::Body: Into<reggie::Body>,
+        for<'b> <F::Client<Body> as HttpClient<Body>>::Future<'b>: Send,
     {
         let mut router = self
             .build_router::<_, F>(entry, template, http_factory)
@@ -129,6 +130,7 @@ impl ViteConfig {
         F: HttpClientFactory + Send + Sync + 'static,
         F::Client<Body>: Send + Sync + 'static,
         <F::Client<Body> as HttpClient<Body>>::Body: Into<reggie::Body>,
+        for<'b> <F::Client<Body> as HttpClient<Body>>::Future<'b>: Send,
     {
         let config = ViteOptions {
             client: ClientEntry::new(&entry.client)
@@ -156,6 +158,7 @@ impl ViteConfig {
         T: Template + Send + Sync + Clone + 'static,
         F: HttpClientFactory + Send + Sync + Clone + 'static,
         F::Client<Body>: Send + Sync + 'static,
+        for<'b> <F::Client<Body> as HttpClient<Body>>::Future<'b>: Send,
         <F::Client<Body> as HttpClient<Body>>::Body: Into<reggie::Body>,
     {
         let mut router = Router::<()>::new();

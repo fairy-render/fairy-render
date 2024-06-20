@@ -160,6 +160,9 @@ where
 {
     type Body = Body;
 
+    type Future<'a> =
+        BoxFuture<'a, Result<axum::http::Response<Self::Body>, fairy_render::reggie::Error>>;
+
     fn send<'a>(
         &'a self,
         request: axum::http::Request<B>,

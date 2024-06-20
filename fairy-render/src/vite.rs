@@ -3,6 +3,7 @@ use std::{
     path::{Path, PathBuf},
 };
 
+use futures_core::Future;
 use reggie::{factory_arc, factory_box, http::Request, Body, HttpClient, HttpClientFactory};
 use relative_path::RelativePathBuf;
 
@@ -138,6 +139,7 @@ impl<'a> ViteOptions<'a> {
         T::Error: std::error::Error + Send + Sync + 'static,
         F: HttpClientFactory + Send + Sync + 'static,
         F::Client<Body>: Send + Sync + 'static,
+        for<'b> <F::Client<Body> as HttpClient<Body>>::Future<'b>: Send,
         <F::Client<Body> as HttpClient<Body>>::Body: Into<reggie::Body>,
     {
         let path = self.path;
