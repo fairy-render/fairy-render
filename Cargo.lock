@@ -293,27 +293,16 @@ dependencies = [
 ]
 
 [[package]]
-name = "fairy-axum"
-version = "0.1.0"
-dependencies = [
- "axum",
- "fairy-http",
- "fairy-render",
- "futures",
- "markup",
- "tokio",
- "tower-http",
-]
-
-[[package]]
 name = "fairy-http"
 version = "0.1.0"
 dependencies = [
  "axum",
  "fairy-render",
+ "futures",
  "markup",
  "reggie",
  "serde",
+ "tokio",
  "tower",
  "tower-http",
  "tower-layer",

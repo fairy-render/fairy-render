@@ -13,6 +13,13 @@ tower-layer = { version = "0.3" }
 fairy-render = { path = "../fairy-render" }
 
 axum = { version = "0.7", default-features = false }
-markup = { version = "0.15" }
 
 serde = { version = "1", feeatures = ["serde"] }
+
+
+[dev-dependencies]
+tokio = { version = "1", features = ["full"] }
+markup = { version = "0.15" }
+futures = { version = "0.3" }
+axum = { version = "0.7", default-features = true }
+fairy-render = { path = "../fairy-render", features = ["reqwest"] }
