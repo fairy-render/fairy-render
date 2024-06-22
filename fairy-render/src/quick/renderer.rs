@@ -51,7 +51,10 @@ fn new_worker(
                     }
 
                     modules.add_search_path(".");
-
+                    // modules.register_src("util", include_bytes!("../util.js").to_vec());
+                    // modules.register_src("events", include_bytes!("../events.js").to_vec());
+                    // modules.register_src("inherits", include_bytes!("../inherits.js").to_vec());
+                    // modules.register_src("stream", include_bytes!("../stream.js").to_vec());
                     modules.register::<klaver_base::Module>("@klaver/base");
                     modules.register::<klaver_http::Module>("@klaver/http");
 

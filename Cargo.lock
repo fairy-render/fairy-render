@@ -779,7 +779,7 @@ dependencies = [
 [[package]]
 name = "klaver-base"
 version = "0.1.0"
-source = "git+https://github.com/fairy-render/klaver#1b37edf476a623e661052f7ebaa6f4e9db9d3138"
+source = "git+https://github.com/fairy-render/klaver#1b6b371106acdfde722a55ecb342535f9480757a"
 dependencies = [
  "encoding_rs",
  "extensions",
@@ -793,7 +793,7 @@ dependencies = [
 [[package]]
 name = "klaver-compat"
 version = "0.1.0"
-source = "git+https://github.com/fairy-render/klaver#1b37edf476a623e661052f7ebaa6f4e9db9d3138"
+source = "git+https://github.com/fairy-render/klaver#1b6b371106acdfde722a55ecb342535f9480757a"
 dependencies = [
  "klaver-base",
  "rquickjs",
@@ -802,7 +802,7 @@ dependencies = [
 [[package]]
 name = "klaver-http"
 version = "0.1.0"
-source = "git+https://github.com/fairy-render/klaver#1b37edf476a623e661052f7ebaa6f4e9db9d3138"
+source = "git+https://github.com/fairy-render/klaver#1b6b371106acdfde722a55ecb342535f9480757a"
 dependencies = [
  "bytes",
  "futures",
@@ -816,7 +816,7 @@ dependencies = [
 [[package]]
 name = "klaver-module"
 version = "0.1.0"
-source = "git+https://github.com/fairy-render/klaver#1b37edf476a623e661052f7ebaa6f4e9db9d3138"
+source = "git+https://github.com/fairy-render/klaver#1b6b371106acdfde722a55ecb342535f9480757a"
 dependencies = [
  "relative-path",
  "rquickjs",
@@ -825,7 +825,7 @@ dependencies = [
 [[package]]
 name = "klaver-shared"
 version = "0.1.0"
-source = "git+https://github.com/fairy-render/klaver#1b37edf476a623e661052f7ebaa6f4e9db9d3138"
+source = "git+https://github.com/fairy-render/klaver#1b6b371106acdfde722a55ecb342535f9480757a"
 dependencies = [
  "locket",
 ]
@@ -833,7 +833,7 @@ dependencies = [
 [[package]]
 name = "klaver-worker"
 version = "0.1.0"
-source = "git+https://github.com/fairy-render/klaver#1b37edf476a623e661052f7ebaa6f4e9db9d3138"
+source = "git+https://github.com/fairy-render/klaver#1b6b371106acdfde722a55ecb342535f9480757a"
 dependencies = [
  "deadpool",
  "futures",

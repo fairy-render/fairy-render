@@ -17,7 +17,7 @@ const Presets = {
 	},
 	react: async (_command: Cmd, options: Partial<ReactOptions>) => {
 		const react = await import("@vitejs/plugin-react");
-		return react.default(options);
+		return react.default({jsxImportSource:"react",...options});
 	},
 };
 
