@@ -8,7 +8,7 @@ export default function App(props: { url?: string }) {
 		<div>
 			<h3>Page</h3>
 			<Suspense fallback={"loading"}>
-				<Router base="/solid" url={props.url}>
+				<Router url={props.url}>
 					<Route path="/" component={Index} />
 					<Route path="/subpage" component={Subpage} />
 					<Route path="/*" component={() => <div>NotFound</div>} />

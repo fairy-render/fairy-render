@@ -105,28 +105,32 @@ async fn api() -> &'static str {
 async fn main() {
     let mut app = Router::new();
 
-    let vite_config = ViteConfig::load(Path::new("vite-config.json"))
+    let solid_config = ViteConfig::load(Path::new("solid-config.json"))
         .await
         .unwrap();
 
-    let service = vite_config
-        .build(
-            T,
-            Fetcher {
-                client: fairy_render::reqwest::Client::new(),
-            },
-            RouteMap::default()
-                .map("solid", "/solid")
-                .map("react", "/react"),
-        )
+    let react_config = ViteConfig::load(Path::new("react-config.json"))
+        .await
+        .unwrap();
+
+    let fetcher = Fetcher {
+        client: fairy_render::reqwest::Client::new(),
+    };
+
+    let solid = solid_config
+        .build(T, fetcher.clone(), RouteMap::default())
+        .await;
+
+    let react = react_config
+        .build(T, fetcher.clone(), RouteMap::default())
         .await;
 
     // let service = vite_config.build_dev(T, RouteMap::default()).unwrap();
 
     app = app
         .route("/api/message", get(api))
-        // .nest_service("/assets", assets)
-        .fallback_service(service);
+        .nest_service("/solid", solid)
+        .nest_service("/react", react);
 
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
     axum::serve(listener, app).await.unwrap();

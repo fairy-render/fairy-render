@@ -1,0 +1,19 @@
+{
+	"name": "solid-example",
+	"version": "0.0.1",
+	"type": "module",
+	"scripts": {
+		"dev": "fairy watch",
+		"build": "fairy build",
+		"fairy": "fairy"
+	},
+	"devDependencies": {
+		"@fairy-render/build": "workspace:^",
+		"typescript": "^5.0.2"
+	},
+	"dependencies": {
+		"@fairy-render/solid": "workspace:^",
+		"@solidjs/router": "^0.13.5",
+		"solid-js": "^1.8.1"
+	}
+}

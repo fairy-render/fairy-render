@@ -202,7 +202,7 @@ pub struct Vite<R> {
     // asset_base: String,
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct ViteEntry {
     pub client: Option<String>,
     pub server: String,
@@ -243,7 +243,7 @@ where
         let vite_entry: ViteEntry = entry.into();
 
         let Some(entry) = self.server_manifest.get(&vite_entry.server) else {
-            panic!("entry not found");
+            panic!("entry not found: {:?}", vite_entry);
         };
 
         if !entry.is_entry {

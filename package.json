@@ -4,7 +4,7 @@
 	"scripts": {
 		"build": "pnpm run -r --filter @fairy-render/* build",
 		"watch": "pnpm run -r --filter @fairy-render/* watch",
-		"build-example": "pnpm run -r --filter example build",
+		"build-example": "pnpm run -r --filter solid-example build; pnpm run -r --filter react-example build",
 		"watch-example": "pnpm run -r --filter example dev"
 	},
 	"dependencies": {
