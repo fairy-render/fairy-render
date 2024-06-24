@@ -1,0 +1,53 @@
+{
+	"name": "@fairy-render/react",
+	"version": "0.0.1",
+	"type": "module",
+	"scripts": {
+		"build": "tsup",
+		"watch": "tsup --watch"
+	},
+	"main": "./dist/index.cjs",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"browser": {
+				"development": {
+					"types": "./types/index.d.ts",
+					"import": "./dist/index.dev.js",
+					"require": "./dist/index.dev.cjs"
+				},
+				"types": "./types/index.d.ts",
+				"import": "./dist/index.js",
+				"require": "./dist/index.cjs"
+			},
+			"development": {
+				"types": "./types/index.d.ts",
+				"import": "./dist/index.dev.js",
+				"require": "./dist/index.dev.cjs"
+			},
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs",
+			"types": "./dist/index.d.ts"
+		},
+		"./server": {
+			"import": "./dist/server.js",
+			"require": "./dist/server.cjs",
+			"types": "./dist/server.d.ts"
+		}
+	},
+	"devDependencies": {
+		"@types/node": "^20.8.6",
+		"tsup": "^8.1.0",
+		"typescript": "^5.2.2",
+		"@types/react": "^18.3.3",
+		"@types/react-dom": "^18.3.0",
+		"react": "^18.3.1",
+		"react-dom": "^18.3.1"
+	},
+
+	"peerDependencies": {
+		"react": "^18.3.1",
+		"react-dom": "^18.3.1"
+	}
+}

@@ -63,7 +63,7 @@ export async function createConfig(
 			outDir: cfg.outputDir,
 		},
 		define: {
-			"process.env.NODE_ENV": '"production"'
+			"process.env.NODE_ENV": '"production"',
 		},
 		server: cmd === "watch" ? { port: cfg.port } : void 0,
 		plugins: [

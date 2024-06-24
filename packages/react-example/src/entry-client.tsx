@@ -1,4 +1,4 @@
-import { render } from "react";
-import App from "./app.jsx";
+import { render } from "@fairy-render/react";
+import { App } from "./app.jsx";
 
-render(<App />, document.querySelector("#root"));
+render(<App />, document.querySelector("#root")!);

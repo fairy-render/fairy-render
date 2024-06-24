@@ -11,7 +11,7 @@ export default function App(props: { url?: string }) {
 				<Router url={props.url}>
 					<Route path="/" component={Index} />
 					<Route path="/subpage" component={Subpage} />
-					<Route path="/*" component={() => <div>NotFound</div>} />
+					<Route path="*" component={() => <div>NotFound</div>} />
 				</Router>
 			</Suspense>
 		</div>
@@ -29,7 +29,7 @@ function Index() {
 
 	return (
 		<div>
-			<A href="/subpage">Subpage</A>
+			<A href="/solid/subpage">Subpage</A>
 			<div>Hello, World!: Show</div>
 			<Suspense>
 				<For each={res()?.products}>

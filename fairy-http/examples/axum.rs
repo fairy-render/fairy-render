@@ -121,9 +121,10 @@ async fn main() {
         .build(T, fetcher.clone(), RouteMap::default())
         .await;
 
-    let react = react_config
-        .build(T, fetcher.clone(), RouteMap::default())
-        .await;
+    // let react = react_config
+    //     .build(T, fetcher.clone(), RouteMap::default())
+    //     .await;
+    let react = react_config.build_dev(T, RouteMap::default()).unwrap();
 
     // let service = vite_config.build_dev(T, RouteMap::default()).unwrap();
 

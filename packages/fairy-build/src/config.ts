@@ -45,7 +45,7 @@ export async function resolvePresets(
 		const p = Presets[key as Preset];
 		if (!p) throw new Error(`preset "${key}" not found`);
 
-		output.push(await Promise.resolve(p(cmd, options ?? {})));
+		output.push(...(await Promise.resolve(p(cmd, options ?? {}))));
 	};
 
 	if (typeof preset === "string") {
