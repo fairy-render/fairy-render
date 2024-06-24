@@ -1,20 +1,15 @@
+use axum::{http::Request, response::Response};
+use fairy_vite::{Asset, AssetKind, Entry, FairyResult, ViteConfig};
+use reggie::Body;
 use std::{
     convert::Infallible,
     future::{ready, Ready},
     sync::Arc,
     task::Poll,
 };
-
-use axum::{http::Request, response::Response};
-use fairy_render::{Asset, AssetKind, FairyResult};
-use reggie::Body;
 use tower_service::Service;
 
-use crate::{
-    config::{Entry, ViteConfig},
-    template::Template,
-    ViteService,
-};
+use crate::{template::Template, ViteService};
 
 #[derive(Clone)]
 pub struct ViteDevService {

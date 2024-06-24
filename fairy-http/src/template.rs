@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use axum::http::Uri;
-use fairy_render::{vite::ViteError, FairyResult};
+use fairy_vite::{FairyResult, ViteError};
 
 pub trait Template {
     fn render(&self, uri: Uri, request: Result<FairyResult, ViteError>) -> String;

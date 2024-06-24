@@ -7,4 +7,4 @@ mod result;
 mod vite;
 mod vite_options;
 
-pub use self::{error::ViteError, fairy::*, result::*, vite::*, vite_options::*};
+pub use self::{config::*, error::ViteError, fairy::*, result::*, vite::*, vite_options::*};

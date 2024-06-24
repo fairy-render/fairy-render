@@ -1,13 +1,13 @@
 mod fairy;
 pub mod quick;
 mod renderer;
-mod result;
-mod utils;
-pub mod vite;
+// mod result;
+// mod utils;
+// pub mod vite;
 
-pub use self::{renderer::*, result::*, utils::load_json};
+pub use self::renderer::*;
 
-#[cfg(feature = "reqwest")]
-pub use reqwest;
+// #[cfg(feature = "reqwest")]
+// pub use reqwest;
 
 pub use reggie;

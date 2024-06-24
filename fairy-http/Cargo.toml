@@ -11,6 +11,7 @@ tower-http = { version = "0.5", features = ["fs"] }
 tower = { version = "0.4", features = ["steer"] }
 tower-layer = { version = "0.3" }
 fairy-render = { path = "../fairy-render" }
+fairy-vite = { path = "../fairy-vite" }
 axum = { version = "0.7", default-features = false }
 serde = { version = "1", feeatures = ["serde"] }
 
@@ -20,4 +21,9 @@ tokio = { version = "1", features = ["full"] }
 markup = { version = "0.15" }
 futures = { version = "0.3" }
 axum = { version = "0.7", default-features = true }
-fairy-render = { path = "../fairy-render", features = ["reqwest"] }
+fairy-render = { path = "../fairy-render" }
+reqwest = { version = "0.12" }
+reggie = { git = "https://github.com/fairy-render/reggie", features = [
+  "json",
+  "reqwest",
+] }

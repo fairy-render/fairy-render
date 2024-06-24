@@ -1,8 +1,8 @@
-use std::sync::Arc;
+use std::{collections::hash_map::Keys, sync::Arc};
 
 use crate::{
-    config::ViteConfig, vite::Vite, Asset, AssetKind, FairyResult, ViteEntry, ViteError,
-    ViteOptions,
+    config::ViteConfig, vite::Vite, Asset, AssetKind, Entry, EntryValue, FairyResult, ViteEntry,
+    ViteError, ViteOptions,
 };
 use fairy_render::{
     quick::{Quick, QuickFactory},
@@ -37,9 +37,24 @@ impl Fairy {
         let vite = opts.build_with(factory, http).await?;
 
         Ok(Fairy {
-            config: config,
+            config,
             vite: Some(Arc::new(vite)),
         })
+    }
+
+    pub fn dev(config: ViteConfig) -> Result<Fairy, ViteError> {
+        Ok(Fairy { config, vite: None })
+    }
+
+    pub fn entries(&self) -> Option<Keys<'_, String, Entry>> {
+        match &self.config.entries {
+            EntryValue::Entry(_) => None,
+            EntryValue::Many(m) => Some(m.keys()),
+        }
+    }
+
+    pub fn config(&self) -> &ViteConfig {
+        &self.config
     }
 
     pub fn create_renderer<'a>(&self, entry: impl Into<Option<&'a str>>) -> FairyRenderer {
@@ -68,17 +83,20 @@ impl Fairy {
             })
         };
 
-        FairyRenderer { mode }
+        FairyRenderer {
+            mode: Arc::new(mode),
+        }
     }
 }
 
+#[derive(Clone)]
 pub struct FairyRenderer {
-    mode: Mode,
+    mode: Arc<Mode>,
 }
 
 impl FairyRenderer {
     pub async fn render<B: Into<Body>>(&self, req: Request<B>) -> Result<FairyResult, ViteError> {
-        match self.mode {
+        match &*self.mode {
             Mode::Dev(ref ret) => Ok(ret.clone()),
             Mode::Prod {
                 ref vite,

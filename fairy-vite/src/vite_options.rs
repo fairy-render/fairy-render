@@ -115,7 +115,7 @@ impl<'a> ViteOptions<'a> {
     }
 
     pub(crate) fn get_server_manifest(&self) -> PathBuf {
-        RelativePath::new(self.client_manifest.unwrap_or("server/.vite/manifest.json"))
+        RelativePath::new(self.server_manifest.unwrap_or("server/.vite/manifest.json"))
             .to_logical_path(&self.path)
     }
 
@@ -126,7 +126,7 @@ impl<'a> ViteOptions<'a> {
 
     pub(crate) fn get_ssr_manifest(&self) -> PathBuf {
         RelativePath::new(
-            self.client_manifest
+            self.ssr_manifest
                 .unwrap_or("client/.vite/ssr-manifest.json"),
         )
         .to_logical_path(&self.path)

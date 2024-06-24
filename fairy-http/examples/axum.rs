@@ -1,20 +1,18 @@
 use std::path::{Path, PathBuf};
 
 use axum::{http::Uri, response::Html, routing::get, Router};
-use fairy_http::{
-    config::{RouteMap, ViteConfig},
-    Template,
-};
+use fairy_http::config::ViteConfigExt;
+use fairy_http::{config::RouteMap, Template};
 use fairy_render::{
     quick::{Quick, QuickFactory},
-    reggie::{Body, HttpClient, HttpClientFactory, Reqwest},
-    vite::{ClientEntry, ServerEntry, ViteError, ViteOptions},
-    AssetKind,
+    reggie::{Body, HttpClient, HttpClientFactory},
 };
+use fairy_vite::ViteConfig;
+use fairy_vite::{AssetKind, FairyResult, ViteError};
 use futures::future::BoxFuture;
 
 markup::define! {
-    Home(req: fairy_render::FairyResult) {
+    Home(req: FairyResult) {
         @markup::doctype()
         html {
             head {
@@ -88,7 +86,7 @@ impl Template for T {
     fn render(
         &self,
         uri: axum::http::Uri,
-        request: Result<fairy_render::FairyResult, fairy_render::vite::ViteError>,
+        request: Result<fairy_vite::FairyResult, fairy_vite::ViteError>,
     ) -> String {
         match request {
             Ok(request) => Home { req: request }.to_string(),
@@ -114,17 +112,21 @@ async fn main() {
         .unwrap();
 
     let fetcher = Fetcher {
-        client: fairy_render::reqwest::Client::new(),
+        client: reqwest::Client::new(),
     };
 
     let solid = solid_config
-        .build(T, fetcher.clone(), RouteMap::default())
-        .await;
+        .build(fetcher.clone(), T, RouteMap::default())
+        .await
+        .unwrap();
 
     // let react = react_config
     //     .build(T, fetcher.clone(), RouteMap::default())
     //     .await;
-    let react = react_config.build_dev(T, RouteMap::default()).unwrap();
+    let react = react_config
+        .build_dev(T, RouteMap::default())
+        .await
+        .unwrap();
 
     // let service = vite_config.build_dev(T, RouteMap::default()).unwrap();
 
@@ -139,7 +141,7 @@ async fn main() {
 
 #[derive(Debug, Clone)]
 pub struct Fetcher {
-    client: fairy_render::reqwest::Client,
+    client: reqwest::Client,
 }
 
 impl HttpClientFactory for Fetcher {
