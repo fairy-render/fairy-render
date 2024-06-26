@@ -148,8 +148,8 @@ impl HttpClientFactory for Fetcher {
     fn create<B>(&self) -> Self::Client<B>
     where
         B: fairy_render::reggie::http_body::Body + Send + 'static,
-        B::Data: Into<axum::body::Bytes>,
-        B::Error: Into<fairy_render::reggie::Error>,
+        B::Data: Into<axum::body::Bytes> + Send,
+        B::Error: Into<fairy_render::reggie::Error> + Send,
     {
         self.clone()
     }
@@ -157,15 +157,15 @@ impl HttpClientFactory for Fetcher {
     type Client<B> = Self
     where
         B: fairy_render::reggie::http_body::Body + Send + 'static,
-        B::Data: Into<axum::body::Bytes>,
-        B::Error: Into<fairy_render::reggie::Error>;
+        B::Data: Into<axum::body::Bytes> + Send,
+        B::Error: Into<fairy_render::reggie::Error> + Send;
 }
 
 impl<B> HttpClient<B> for Fetcher
 where
     B: fairy_render::reggie::http_body::Body + Send + 'static,
-    B::Data: Into<axum::body::Bytes>,
-    B::Error: Into<fairy_render::reggie::Error>,
+    B::Data: Into<axum::body::Bytes> + Send,
+    B::Error: Into<fairy_render::reggie::Error> + Send,
 {
     type Body = Body;
 
