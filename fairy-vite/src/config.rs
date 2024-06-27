@@ -33,8 +33,9 @@ impl ViteConfig {
         Path::new(&self.work_dir)
     }
 
+    /// Path to client side assets
     pub fn assets(&self) -> PathBuf {
-        self.work_dir().join(&self.assets)
+        self.root().join("client").join(&self.assets)
     }
 
     /// The build root
