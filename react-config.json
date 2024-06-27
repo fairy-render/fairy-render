@@ -1,4 +1,5 @@
 {
+	"$schema": "./packages/fairy-build/config.schema.json",
 	"workDir": "/home/rasmus/Development/fairy/fairy-render/packages/react-example",
 	"root": "dist",
 	"entries": {

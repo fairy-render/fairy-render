@@ -75,10 +75,10 @@ where
                 panic!("client entry does not exists")
             };
 
-            let mut assets = vec![Asset {
+            assets.push(Asset {
                 file: client_entry.file.clone(),
                 kind: AssetKind::Script,
-            }];
+            });
 
             for css in &client_entry.css {
                 assets.push(Asset {
