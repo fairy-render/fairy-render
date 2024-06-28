@@ -35,8 +35,13 @@ rquickjs = { version = "0.6", features = [
 
 [dev-dependencies]
 tokio = { version = "1", default-features = false, features = ["fs", "macros"] }
+reggie = { git = "https://github.com/fairy-render/reggie", features = [
+  "json",
+  "reqwest",
+] }
+
 
 [[example]]
 name = "fairy"
 path = "examples/fairy.rs"
-required-features = ["reqwest"]
+required-features = []

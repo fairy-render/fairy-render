@@ -13,7 +13,7 @@ tower-layer = { version = "0.3" }
 fairy-render = { path = "../fairy-render" }
 fairy-vite = { path = "../fairy-vite" }
 axum = { version = "0.7", default-features = false }
-serde = { version = "1", feeatures = ["serde"] }
+serde = { version = "1", features = ["derive"] }
 
 
 [dev-dependencies]
