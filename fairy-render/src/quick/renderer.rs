@@ -288,7 +288,7 @@ impl Renderer for Quick {
                         .with(|ctx| {
                             let err = ctx.catch();
 
-                            if let Some(exp) = err.into_exception() {
+                            if let Some(exp) = err.clone().into_exception() {
                                 Ok((
                                     exp.message(),
                                     exp.stack(),
@@ -297,7 +297,13 @@ impl Renderer for Quick {
                                     exp.column(),
                                 ))
                             } else {
-                                Ok((None, None, None, None, None))
+                                Ok((
+                                    err.into_string().and_then(|m| m.to_string().ok()),
+                                    None,
+                                    None,
+                                    None,
+                                    None,
+                                ))
                             }
                         })
                         .await?;
