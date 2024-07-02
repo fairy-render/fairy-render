@@ -2,12 +2,14 @@ use core::fmt;
 use std::{path::PathBuf, pin::Pin, sync::Arc};
 
 use futures_core::Future;
+use klaver::{
+    pool::Pool,
+    quick::{self, CatchResultExt, Ctx, FromJs},
+    vm::{Vm, VmOptions},
+};
 use klaver_http::set_client_box;
-use klaver_module::Modules;
-use klaver_worker::{ModuleId, Persistence, Worker};
 use reggie::SharedClientFactory;
 use relative_path::RelativePathBuf;
-use rquickjs::{Ctx, FromJs, Function, Module, Value};
 
 use crate::{
     renderer::{RenderResult, Renderer},
@@ -23,9 +25,9 @@ struct JsResult {
 }
 
 impl<'js> FromJs<'js> for JsResult {
-    fn from_js(ctx: &Ctx<'js>, value: rquickjs::Value<'js>) -> rquickjs::Result<Self> {
+    fn from_js(ctx: &Ctx<'js>, value: quick::Value<'js>) -> quick::Result<Self> {
         let Ok(obj) = value.try_into_object() else {
-            return Err(rquickjs::Error::new_from_js("value", "object"));
+            return Err(quick::Error::new_from_js("value", "object"));
         };
 
         Ok(JsResult {
@@ -36,71 +38,98 @@ impl<'js> FromJs<'js> for JsResult {
     }
 }
 
-fn new_worker(
-    client: SharedClientFactory,
-    search_paths: Vec<PathBuf>,
-) -> klaver_worker::pool::Pool {
-    let pool =
-        klaver_worker::pool::Pool::builder(klaver_worker::pool::Manager::new_with_customize(
-            move |runtime, ctx| {
-                let search_paths = search_paths.clone();
-                Box::pin(async move {
-                    let mut modules = Modules::default();
-                    for path in &search_paths {
-                        modules.add_search_path(path);
-                    }
+// fn new_worker(
+//     client: SharedClientFactory,
+//     search_paths: Vec<PathBuf>,
+// ) -> klaver_worker::pool::Pool {
+//     let pool =
+//         klaver_worker::pool::Pool::builder(klaver_worker::pool::Manager::new_with_customize(
+//             move |runtime, ctx| {
+//                 let search_paths = search_paths.clone();
+//                 Box::pin(async move {
+//                     let mut modules = Modules::default();
+//                     for path in &search_paths {
+//                         modules.add_search_path(path);
+//                     }
 
-                    modules.add_search_path(".");
-                    // modules.register_src("util", include_bytes!("../util.js").to_vec());
-                    // modules.register_src("events", include_bytes!("../events.js").to_vec());
-                    // modules.register_src("inherits", include_bytes!("../inherits.js").to_vec());
-                    // modules.register_src("stream", include_bytes!("../stream.js").to_vec());
-                    modules.register::<klaver_base::Module>("@klaver/base");
-                    modules.register::<klaver_http::Module>("@klaver/http");
+//                     modules.add_search_path(".");
+//                     // modules.register_src("util", include_bytes!("../util.js").to_vec());
+//                     // modules.register_src("events", include_bytes!("../events.js").to_vec());
+//                     // modules.register_src("inherits", include_bytes!("../inherits.js").to_vec());
+//                     // modules.register_src("stream", include_bytes!("../stream.js").to_vec());
+//                     modules.register::<klaver_base::Module>("@klaver/base");
+//                     modules.register::<klaver_http::Module>("@klaver/http");
 
-                    modules.attach(runtime).await;
+//                     modules.attach(runtime).await;
 
-                    Ok(())
-                })
-            },
-            move |ctx, _| {
-                let client = client.clone();
-                Box::pin(async move {
-                    ctx.globals().set(
-                        "print",
-                        Function::new(ctx.clone(), |arg: rquickjs::Value| {
-                            println!("{}", arg.try_into_string().unwrap().to_string()?);
-                            rquickjs::Result::Ok(())
-                        }),
-                    )?;
+//                     Ok(())
+//                 })
+//             },
+//             move |ctx, _| {
+//                 let client = client.clone();
+//                 Box::pin(async move {
+//                     ctx.globals().set(
+//                         "print",
+//                         Function::new(ctx.clone(), |arg: quick::Value| {
+//                             println!("{}", arg.try_into_string().unwrap().to_string()?);
+//                             quick::Result::Ok(())
+//                         }),
+//                     )?;
 
-                    set_client_box(&ctx, client)?;
+//                     set_client_box(&ctx, client)?;
 
-                    klaver_compat::init(&ctx)?;
+//                     klaver_compat::init(&ctx)?;
 
-                    ctx.eval(GLOBALS)?;
+//                     ctx.eval(GLOBALS)?;
 
-                    Ok(())
-                })
-            },
-        ))
-        .max_size(10)
-        .build()
-        .unwrap();
+//                     Ok(())
+//                 })
+//             },
+//         ))
+//         .max_size(10)
+//         .build()
+//         .unwrap();
 
-    pool
-}
+//     pool
+// }
 
 #[derive(Clone)]
 pub struct Quick {
-    worker: klaver_worker::pool::Pool,
+    worker: Pool,
 }
 
 impl Quick {
     pub fn new(client: SharedClientFactory, search_paths: Vec<PathBuf>) -> Quick {
-        Quick {
-            worker: new_worker(client, search_paths),
+        let mut opts = VmOptions::default().module::<klaver_compat::Compat>();
+
+        for sp in search_paths {
+            opts = opts.search_path(sp);
         }
+
+        let pool = Pool::builder(klaver::pool::Manager::new(opts).init(move |vm| {
+            let client = client.clone();
+            Box::pin(async move {
+                vm.run_with(|ctx| {
+                    set_client_box(ctx, client)?;
+                    Ok(())
+                })
+                .await?;
+
+                klaver_compat::init(vm).await?;
+
+                vm.run_with(|ctx| {
+                    ctx.eval(GLOBALS)?;
+                    Ok(())
+                })
+                .await?;
+
+                Ok(())
+            })
+        }))
+        .build()
+        .unwrap();
+
+        Quick { worker: pool }
     }
 }
 
@@ -190,13 +219,13 @@ impl std::error::Error for ScriptError {}
 
 #[derive(Debug)]
 pub enum QuickRenderError {
-    Engine(klaver_worker::Error),
-    Pool(klaver_worker::pool::PoolError),
+    Engine(klaver::Error),
+    Pool(klaver::pool::PoolError),
     Script(ScriptError),
 }
 
-impl From<klaver_worker::Error> for QuickRenderError {
-    fn from(value: klaver_worker::Error) -> Self {
+impl From<klaver::Error> for QuickRenderError {
+    fn from(value: klaver::Error) -> Self {
         QuickRenderError::Engine(value)
     }
 }
@@ -241,7 +270,7 @@ impl QuickFactory {
 impl RendererFactory for QuickFactory {
     type Renderer = Quick;
 
-    type Error = klaver_worker::Error;
+    type Error = klaver::Error;
 
     fn create(
         &self,
@@ -263,15 +292,18 @@ impl Renderer for Quick {
         Box::pin(async move {
             let worker = self.worker.get().await.map_err(QuickRenderError::Pool)?;
 
-            let ret = klaver_worker::async_with!(worker => |ctx, _p| {
+            let ret = klaver::async_with!(worker => |ctx| {
 
-                let fairy:  rquickjs::Object = ctx.globals().get("Fairy")?;
-                let run_main: rquickjs::Function = fairy.get("runMain")?;
 
-                let req = klaver_http::Request::from_request(&ctx, req)?;
+                let fairy:  quick::Object = ctx.globals().get("Fairy").catch(&ctx)?;
+                let run_main: quick::Function = fairy.get("runMain").catch(&ctx)?;
 
-                let ret = run_main.call::<_,rquickjs::Promise>((path.as_str(), req,))?;
-                let ret = ret.into_future::<JsResult>().await?;
+
+                let req = klaver_http::Request::from_request(&ctx, req).catch(&ctx)?;
+
+                let ret = run_main.call::<_,quick::Promise>((path.as_str(), req,)).catch(&ctx)?;
+                let ret = ret.into_future::<JsResult>().await.catch(&ctx)?;
+
 
                 Ok(RenderResult {
                     content: ret.content.into(),
@@ -279,45 +311,45 @@ impl Renderer for Quick {
                     head: ret.head
                 })
             })
-            .await;
+            .await?;
 
-            let ret = match ret {
-                Ok(ret) => ret,
-                Err(klaver_worker::Error::Script(rquickjs::Error::Exception)) => {
-                    let (message, stack, file, line, column) = worker
-                        .with(|ctx| {
-                            let err = ctx.catch();
+            // let ret = match ret {
+            //     Ok(ret) => ret,
+            //     Err(klaver_worker::Error::Script(quick::Error::Exception)) => {
+            //         let (message, stack, file, line, column) = worker
+            //             .with(|ctx| {
+            //                 let err = ctx.catch();
 
-                            if let Some(exp) = err.clone().into_exception() {
-                                Ok((
-                                    exp.message(),
-                                    exp.stack(),
-                                    exp.file(),
-                                    exp.line(),
-                                    exp.column(),
-                                ))
-                            } else {
-                                Ok((
-                                    err.into_string().and_then(|m| m.to_string().ok()),
-                                    None,
-                                    None,
-                                    None,
-                                    None,
-                                ))
-                            }
-                        })
-                        .await?;
+            //                 if let Some(exp) = err.clone().into_exception() {
+            //                     Ok((
+            //                         exp.message(),
+            //                         exp.stack(),
+            //                         exp.file(),
+            //                         exp.line(),
+            //                         exp.column(),
+            //                     ))
+            //                 } else {
+            //                     Ok((
+            //                         err.into_string().and_then(|m| m.to_string().ok()),
+            //                         None,
+            //                         None,
+            //                         None,
+            //                         None,
+            //                     ))
+            //                 }
+            //             })
+            //             .await?;
 
-                    return Err(QuickRenderError::Script(ScriptError {
-                        message,
-                        stack,
-                        file,
-                        line,
-                        column,
-                    }));
-                }
-                Err(err) => return Err(err.into()),
-            };
+            //         return Err(QuickRenderError::Script(ScriptError {
+            //             message,
+            //             stack,
+            //             file,
+            //             line,
+            //             column,
+            //         }));
+            //     }
+            //     Err(err) => return Err(err.into()),
+            // };
 
             Ok(ret)
         })

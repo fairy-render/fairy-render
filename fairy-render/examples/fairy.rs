@@ -12,7 +12,7 @@ async fn main() {
 
     let ret = quick
         .render(
-            "packages/example/dist/server/entry-server.js".into(),
+            "packages/solid-example/dist/server/entry-server.js".into(),
             Request::builder().uri("/").body(Body::empty()).unwrap(),
         )
         .await
