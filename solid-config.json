@@ -7,7 +7,7 @@
 	},
 	"base": "/",
 	"port": 3768,
-	"assets": "client/assets",
+	"assets": "assets",
 	"assetsPath": "/assets",
 	"clientManifest": "client/.vite/manifest.json",
 	"serverManifest": "server/.vite/manifest.json",
