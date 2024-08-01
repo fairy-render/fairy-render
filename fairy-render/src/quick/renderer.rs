@@ -38,61 +38,6 @@ impl<'js> FromJs<'js> for JsResult {
     }
 }
 
-// fn new_worker(
-//     client: SharedClientFactory,
-//     search_paths: Vec<PathBuf>,
-// ) -> klaver_worker::pool::Pool {
-//     let pool =
-//         klaver_worker::pool::Pool::builder(klaver_worker::pool::Manager::new_with_customize(
-//             move |runtime, ctx| {
-//                 let search_paths = search_paths.clone();
-//                 Box::pin(async move {
-//                     let mut modules = Modules::default();
-//                     for path in &search_paths {
-//                         modules.add_search_path(path);
-//                     }
-
-//                     modules.add_search_path(".");
-//                     // modules.register_src("util", include_bytes!("../util.js").to_vec());
-//                     // modules.register_src("events", include_bytes!("../events.js").to_vec());
-//                     // modules.register_src("inherits", include_bytes!("../inherits.js").to_vec());
-//                     // modules.register_src("stream", include_bytes!("../stream.js").to_vec());
-//                     modules.register::<klaver_base::Module>("@klaver/base");
-//                     modules.register::<klaver_http::Module>("@klaver/http");
-
-//                     modules.attach(runtime).await;
-
-//                     Ok(())
-//                 })
-//             },
-//             move |ctx, _| {
-//                 let client = client.clone();
-//                 Box::pin(async move {
-//                     ctx.globals().set(
-//                         "print",
-//                         Function::new(ctx.clone(), |arg: quick::Value| {
-//                             println!("{}", arg.try_into_string().unwrap().to_string()?);
-//                             quick::Result::Ok(())
-//                         }),
-//                     )?;
-
-//                     set_client_box(&ctx, client)?;
-
-//                     klaver_compat::init(&ctx)?;
-
-//                     ctx.eval(GLOBALS)?;
-
-//                     Ok(())
-//                 })
-//             },
-//         ))
-//         .max_size(10)
-//         .build()
-//         .unwrap();
-
-//     pool
-// }
-
 #[derive(Clone)]
 pub struct Quick {
     worker: Pool,

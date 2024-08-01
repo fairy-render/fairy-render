@@ -1,7 +1,6 @@
 use futures_core::{future::BoxFuture, Future};
 use reggie::{bytes::Bytes, http::Request, Body, SharedClientFactory};
 use relative_path::RelativePathBuf;
-use std::path::PathBuf;
 
 #[derive(Debug)]
 pub struct RenderResult {

@@ -45,14 +45,6 @@ impl<R: Renderer> Vite<R>
 where
     R::Error: std::error::Error + Send + Sync + 'static,
 {
-    // pub fn assets_path(&self) -> &Path {
-    //     &self.asset_path
-    // }
-
-    // pub fn asset_base(&self) -> &str {
-    //     &self.asset_base
-    // }
-
     pub async fn render<B: Into<Body>>(
         &self,
         entry: impl Into<ViteEntry>,

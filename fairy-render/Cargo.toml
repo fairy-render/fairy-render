@@ -22,19 +22,6 @@ klaver = { git = "https://github.com/fairy-render/klaver", features = ["pool"] }
 klaver-compat = { git = "https://github.com/fairy-render/klaver" }
 klaver-http = { git = "https://github.com/fairy-render/klaver" }
 
-# klaver-module = { git = "https://github.com/fairy-render/klaver" }
-# klaver-worker = { git = "https://github.com/fairy-render/klaver", features = [
-#   "pool",
-# ] }
-# klaver-http = { git = "https://github.com/fairy-render/klaver" }
-# klaver-base = { git = "https://github.com/fairy-render/klaver" }
-# klaver-compat = { git = "https://github.com/fairy-render/klaver" }
-# rquickjs = { version = "0.6", features = [
-#   "futures",
-#   "macro",
-#   "classes",
-#   "array-buffer",
-# ] }
 
 [dev-dependencies]
 tokio = { version = "1", default-features = false, features = ["fs", "macros"] }
