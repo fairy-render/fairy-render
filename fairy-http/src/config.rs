@@ -1,16 +1,10 @@
-use crate::{render::FairyRenderService, RenderService, Template, ViteDevService, ViteService};
-use axum::{http::Request, response::IntoResponse, Router};
-use fairy_render::quick::{Quick, QuickFactory};
-use fairy_vite::{Entry, Fairy, ViteConfig, ViteError};
+use crate::{render::FairyRenderService, Template, ViteDevService, ViteService};
+use axum::Router;
+use fairy_render::quick::QuickFactory;
+use fairy_vite::{Fairy, ViteConfig, ViteError};
 use reggie::{Body, HttpClient, HttpClientFactory};
-use serde::{Deserialize, Serialize};
 use std::future::Future;
-use std::{
-    collections::HashMap,
-    convert::Infallible,
-    path::{Path, PathBuf},
-};
-use tower::Service;
+use std::collections::HashMap;
 use tower_http::services::ServeDir;
 
 #[derive(Debug, Default)]

@@ -1,11 +1,11 @@
 use core::fmt;
-use std::{path::PathBuf, pin::Pin, sync::Arc};
+use std::path::PathBuf;
 
 use futures_core::Future;
 use klaver::{
     pool::Pool,
     quick::{self, CatchResultExt, Ctx, FromJs},
-    vm::{Vm, VmOptions},
+    vm::VmOptions,
 };
 use klaver_http::set_client_box;
 use reggie::SharedClientFactory;

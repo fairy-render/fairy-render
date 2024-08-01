@@ -1,12 +1,9 @@
-use std::path::{Path, PathBuf};
+use std::path::Path;
 
-use axum::{http::Uri, response::Html, routing::get, Router};
+use axum::{http::Uri, routing::get, Router};
 use fairy_http::config::ViteConfigExt;
 use fairy_http::{config::RouteMap, Template};
-use fairy_render::{
-    quick::{Quick, QuickFactory},
-    reggie::{Body, HttpClient, HttpClientFactory},
-};
+use fairy_render::reggie::{Body, HttpClient, HttpClientFactory};
 use fairy_vite::ViteConfig;
 use fairy_vite::{AssetKind, FairyResult, ViteError};
 use futures::future::BoxFuture;

@@ -1,6 +1,6 @@
 use std::{
     convert::Infallible,
-    path::{Path, PathBuf},
+    path::Path,
 };
 
 use crate::RenderService;
@@ -9,8 +9,8 @@ use super::template::Template;
 use axum::{body::Bytes, routing::RouterIntoService, BoxError, Router};
 use fairy_render::quick::Quick;
 use fairy_vite::{Vite, ViteEntry};
-use reggie::http::{Request, Response};
-use tower::{Layer, Service, ServiceExt};
+use reggie::http::Request;
+use tower::Service;
 use tower_http::services::ServeDir;
 
 pub struct ViteService<B> {

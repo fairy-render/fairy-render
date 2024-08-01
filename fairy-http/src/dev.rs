@@ -9,7 +9,7 @@ use std::{
 };
 use tower_service::Service;
 
-use crate::{template::Template, ViteService};
+use crate::template::Template;
 
 #[derive(Clone)]
 pub struct ViteDevService {
