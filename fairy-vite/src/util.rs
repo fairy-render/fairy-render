@@ -9,6 +9,7 @@ pub async fn load_json<T: serde::de::DeserializeOwned>(path: &Path) -> Result<T,
             path: path.display().to_string(),
             error: Some(Box::new(err)),
         })?;
+
     serde_json::from_slice(&cmb).map_err(|err| ViteError::Manifest {
         path: path.display().to_string(),
         error: Some(Box::new(err)),

@@ -16,8 +16,6 @@ pub struct Vite<R> {
     client_manifest: Manifest,
     renderer: R,
     root: PathBuf,
-    // asset_path: PathBuf,
-    // asset_base: String,
 }
 
 #[derive(Clone, Debug)]
@@ -121,15 +119,6 @@ where
 }
 
 impl<'a> ViteOptions<'a> {
-    #[cfg(feature = "reqwest")]
-    pub async fn build<T>(self, renderer: T) -> Result<Vite<T::Renderer>, ViteError>
-    where
-        T: RendererFactory,
-        T::Error: std::error::Error + Send + Sync + 'static,
-    {
-        self.build_with(renderer, reggie::Reqwest::default()).await
-    }
-
     pub async fn build_with<T, F>(
         self,
         renderer: T,

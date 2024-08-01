@@ -4,10 +4,7 @@ use crate::{
     config::ViteConfig, vite::Vite, Asset, AssetKind, Entry, EntryValue, FairyResult, ViteEntry,
     ViteError, ViteOptions,
 };
-use fairy_render::{
-    quick::{Quick, QuickFactory},
-    Renderer,
-};
+use fairy_render::quick::{Quick, QuickFactory};
 use reggie::{Body, HttpClient, HttpClientFactory, Request};
 
 enum Mode {
