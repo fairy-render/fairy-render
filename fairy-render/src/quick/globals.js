@@ -11,7 +11,7 @@
 			const { default: render } = await import(path);
 
 			if (typeof render !== "function") {
-				throw new Error("module does not export function");
+				throw new TypeError("module does not export function");
 			}
 
 			const ret = await Promise.resolve(render(...args));

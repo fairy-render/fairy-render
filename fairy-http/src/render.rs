@@ -17,20 +17,18 @@ use crate::template::Template;
 
 #[derive(Clone)]
 pub struct RenderService {
-    fairy: Arc<Vite<Quick>>,
-    entry: ViteEntry,
+    fairy: FairyRenderer,
     template: Arc<dyn Template + Send + Sync>,
 }
 
 impl RenderService {
-    pub fn new<T>(vite: Vite<Quick>, entry: ViteEntry, func: T) -> RenderService
+    pub fn new<T>(fairy: FairyRenderer, func: T) -> RenderService
     where
         T: Template + Send + Sync + 'static,
     {
         RenderService {
-            fairy: Arc::new(vite),
+            fairy,
             template: Arc::new(func),
-            entry,
         }
     }
 }
@@ -57,19 +55,15 @@ where
     fn call(&mut self, req: Request<B>) -> Self::Future {
         let quick = self.fairy.clone();
         let template = self.template.clone();
-        let entry = self.entry.clone();
         Box::pin(async move {
             let uri = req.uri().clone();
 
             let result = quick
-                .render(
-                    entry,
-                    req.map(|m| {
-                        reggie::Body::from_streaming(
-                            m.map_err(|err| reggie::Error::Body(Box::new(err))),
-                        )
-                    }),
-                )
+                .render(req.map(|m| {
+                    reggie::Body::from_streaming(
+                        m.map_err(|err| reggie::Error::Body(Box::new(err))),
+                    )
+                }))
                 .await;
 
             let output = template.render(uri, result);

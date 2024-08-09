@@ -1,14 +1,10 @@
-use std::{
-    convert::Infallible,
-    path::Path,
-};
+use std::{convert::Infallible, path::Path};
 
 use crate::RenderService;
 
 use super::template::Template;
 use axum::{body::Bytes, routing::RouterIntoService, BoxError, Router};
-use fairy_render::quick::Quick;
-use fairy_vite::{Vite, ViteEntry};
+use fairy_vite::FairyRenderer;
 use reggie::http::Request;
 use tower::Service;
 use tower_http::services::ServeDir;
@@ -27,8 +23,7 @@ impl<B> Clone for ViteService<B> {
 
 impl<B> ViteService<B> {
     pub fn new<T>(
-        vite: Vite<Quick>,
-        entry: ViteEntry,
+        fairy: FairyRenderer,
         template: T,
         assets_path: impl AsRef<Path>,
         asset_base: &str,
@@ -40,7 +35,7 @@ impl<B> ViteService<B> {
 
         router = router.nest_service(&asset_base, ServeDir::new(assets_path));
 
-        let render = RenderService::new(vite, entry, template);
+        let render = RenderService::new(fairy, template);
 
         ViteService {
             inner: router.fallback_service(render).into_service(),

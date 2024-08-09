@@ -85,7 +85,7 @@ where
     factory.add_search_path(dist.display().to_string());
 
     if entry.map.is_empty() {
-        let Some(entry) = fairy.config().get_entry(None) else {
+        let Some(_) = fairy.config().get_entry(None) else {
             panic!("entry not found")
         };
 

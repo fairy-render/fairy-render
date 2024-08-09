@@ -1,23 +1,19 @@
 use std::{collections::hash_map::Keys, sync::Arc};
 
 use crate::{
-    config::ViteConfig, vite::Vite, Asset, AssetKind, Entry, EntryValue, FairyResult, ViteEntry,
-    ViteError, ViteOptions,
+    config::ViteConfig, vite::Vite, vite_resolver::ViteEntry, Entry, EntryValue, FairyResult,
+    ViteError,
 };
-use fairy_render::quick::{Quick, QuickFactory};
-use reggie::{Body, HttpClient, HttpClientFactory, Request};
-
-enum Mode {
-    Prod {
-        vite: Arc<Vite<Quick>>,
-        entry: ViteEntry,
-    },
-    Dev(FairyResult),
-}
+use fairy_render::{
+    quick::{Quick, QuickFactory},
+    RendererFactory,
+};
+use reggie::{factory_arc, Body, HttpClient, HttpClientFactory, Request};
 
 pub struct Fairy {
-    pub(crate) config: ViteConfig,
-    pub(crate) vite: Option<Arc<Vite<Quick>>>,
+    pub config: ViteConfig,
+    pub vite: Arc<Vite>,
+    pub vm: Option<Arc<Quick>>,
 }
 
 impl Fairy {
@@ -30,17 +26,23 @@ impl Fairy {
     {
         let factory = QuickFactory::default().search_path(config.root());
 
-        let opts = ViteOptions::new(config.root()).client_manifest(&config.client_manifest);
-        let vite = opts.build_with(factory, http).await?;
+        let vm = factory.create(factory_arc(http)).await.unwrap();
+
+        let vite = Vite::new(&config, false).await?;
 
         Ok(Fairy {
             config,
-            vite: Some(Arc::new(vite)),
+            vm: Some(Arc::new(vm)),
+            vite: Arc::new(vite),
         })
     }
 
     pub fn dev(config: ViteConfig) -> Result<Fairy, ViteError> {
-        Ok(Fairy { config, vite: None })
+        Ok(Fairy {
+            vite: Vite::dev(&config).into(),
+            config,
+            vm: None,
+        })
     }
 
     pub fn entries(&self) -> Option<Keys<'_, String, Entry>> {
@@ -61,44 +63,26 @@ impl Fairy {
             panic!("entry not found: {entry:?}");
         };
 
-        let mode = if let Some(vite) = &self.vite {
-            Mode::Prod {
-                vite: vite.clone(),
-                entry: ViteEntry {
-                    client: entry.client.clone().into(),
-                    server: entry.server.clone(),
-                },
-            }
-        } else {
-            Mode::Dev(FairyResult {
-                head: Vec::new(),
-                assets: vec![Asset {
-                    kind: AssetKind::Script,
-                    file: format!("http://localhost:{}/{}", self.config.port, entry.client),
-                }],
-                content: Vec::new(),
-            })
-        };
-
         FairyRenderer {
-            mode: Arc::new(mode),
+            vite: self.vite.clone(),
+            vm: self.vm.clone(),
+            entry: ViteEntry {
+                client: entry.client.clone().into(),
+                server: entry.server.clone(),
+            },
         }
     }
 }
 
 #[derive(Clone)]
 pub struct FairyRenderer {
-    mode: Arc<Mode>,
+    pub vite: Arc<Vite>,
+    pub vm: Option<Arc<Quick>>,
+    pub entry: ViteEntry,
 }
 
 impl FairyRenderer {
     pub async fn render<B: Into<Body>>(&self, req: Request<B>) -> Result<FairyResult, ViteError> {
-        match &*self.mode {
-            Mode::Dev(ref ret) => Ok(ret.clone()),
-            Mode::Prod {
-                ref vite,
-                ref entry,
-            } => vite.render(entry.clone(), req).await,
-        }
+        self.vite.render(self.entry.clone(), req, &self.vm).await
     }
 }

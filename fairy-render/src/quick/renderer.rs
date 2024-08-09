@@ -4,12 +4,12 @@ use std::path::PathBuf;
 use futures_core::Future;
 use klaver::{
     pool::Pool,
-    quick::{self, CatchResultExt, Ctx, FromJs},
+    quick::{self, CatchResultExt, Class, Ctx, FromJs, Object},
     vm::VmOptions,
 };
 use klaver_http::set_client_box;
 use reggie::SharedClientFactory;
-use relative_path::RelativePathBuf;
+use relative_path::{RelativePath, RelativePathBuf};
 
 use crate::{
     renderer::{RenderResult, Renderer},
@@ -239,64 +239,37 @@ impl Renderer for Quick {
 
             let ret = klaver::async_with!(worker => |ctx| {
 
-
-                let fairy:  quick::Object = ctx.globals().get("Fairy").catch(&ctx)?;
-                let run_main: quick::Function = fairy.get("runMain").catch(&ctx)?;
-
-
                 let req = klaver_http::Request::from_request(&ctx, req).catch(&ctx)?;
-
-                let ret = run_main.call::<_,quick::Promise>((path.as_str(), req,)).catch(&ctx)?;
-                let ret = ret.into_future::<JsResult>().await.catch(&ctx)?;
+                Ok(render(&ctx, &path, req).await.catch(&ctx)?)
 
 
-                Ok(RenderResult {
-                    content: ret.content.into(),
-                    assets: ret.files,
-                    head: ret.head
-                })
             })
             .await?;
-
-            // let ret = match ret {
-            //     Ok(ret) => ret,
-            //     Err(klaver_worker::Error::Script(quick::Error::Exception)) => {
-            //         let (message, stack, file, line, column) = worker
-            //             .with(|ctx| {
-            //                 let err = ctx.catch();
-
-            //                 if let Some(exp) = err.clone().into_exception() {
-            //                     Ok((
-            //                         exp.message(),
-            //                         exp.stack(),
-            //                         exp.file(),
-            //                         exp.line(),
-            //                         exp.column(),
-            //                     ))
-            //                 } else {
-            //                     Ok((
-            //                         err.into_string().and_then(|m| m.to_string().ok()),
-            //                         None,
-            //                         None,
-            //                         None,
-            //                         None,
-            //                     ))
-            //                 }
-            //             })
-            //             .await?;
-
-            //         return Err(QuickRenderError::Script(ScriptError {
-            //             message,
-            //             stack,
-            //             file,
-            //             line,
-            //             column,
-            //         }));
-            //     }
-            //     Err(err) => return Err(err.into()),
-            // };
 
             Ok(ret)
         })
     }
+}
+
+pub async fn render<'js>(
+    ctx: &Ctx<'js>,
+    path: &RelativePath,
+    req: Class<'js, klaver_http::Request<'js>>,
+) -> klaver::quick::Result<RenderResult> {
+    let globals = ctx.globals();
+    if !globals.contains_key("Fairy")? {
+        ctx.eval(GLOBALS)?;
+    }
+
+    let fairy: Object = globals.get("Fairy")?;
+    let run_main: quick::Function = fairy.get("runMain")?;
+
+    let ret = run_main.call::<_, quick::Promise>((path.as_str(), req))?;
+    let ret = ret.into_future::<JsResult>().await?;
+
+    Ok(RenderResult {
+        content: ret.content.into(),
+        assets: ret.files,
+        head: ret.head,
+    })
 }
