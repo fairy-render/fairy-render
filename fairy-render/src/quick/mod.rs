@@ -1,3 +1,3 @@
 mod renderer;
 
-pub use self::renderer::{Quick, QuickFactory};
+pub use self::renderer::{render, Quick, QuickFactory};
