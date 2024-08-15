@@ -8,7 +8,7 @@ edition = "2021"
 
 [dependencies]
 reggie = { git = "https://github.com/fairy-render/reggie", features = ["json"] }
-futures-core = { version = "0.3", default-features = false }
+futures = { version = "0.3", default-features = false }
 
 serde = { version = "1", features = ["derive"] }
 serde_json = { version = "1" }

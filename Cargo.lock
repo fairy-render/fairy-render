@@ -490,7 +490,7 @@ dependencies = [
 name = "fairy-render"
 version = "0.1.0"
 dependencies = [
- "futures-core",
+ "futures",
  "klaver",
  "klaver-compat",
  "klaver-http",

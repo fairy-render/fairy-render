@@ -1,6 +1,6 @@
 use std::{convert::Infallible, sync::Arc};
 
-use futures_core::{future::BoxFuture, Future};
+use futures::{future::BoxFuture, Future};
 use reggie::{bytes::Bytes, http::Request, Body, SharedClientFactory};
 use relative_path::RelativePathBuf;
 
@@ -13,11 +13,10 @@ pub struct RenderResult {
 
 pub trait Renderer {
     type Error;
-    fn render<'a>(
-        &'a self,
-        path: RelativePathBuf,
-        req: Request<Body>,
-    ) -> BoxFuture<'a, Result<RenderResult, Self::Error>>;
+    type Future<'a>: Future<Output = Result<RenderResult, Self::Error>>
+    where
+        Self: 'a;
+    fn render<'a>(&'a self, path: RelativePathBuf, req: Request<Body>) -> Self::Future<'a>;
 }
 
 pub trait RendererFactory {
@@ -32,31 +31,24 @@ pub trait RendererFactory {
 
 impl Renderer for () {
     type Error = Infallible;
-    fn render<'a>(
-        &'a self,
-        _path: RelativePathBuf,
-        _req: Request<Body>,
-    ) -> BoxFuture<'a, Result<RenderResult, Self::Error>> {
-        Box::pin(async move {
-            Ok(RenderResult {
-                content: Bytes::new(),
-                assets: Default::default(),
-                head: Default::default(),
-            })
-        })
+    type Future<'a> = core::future::Ready<Result<RenderResult, Self::Error>>;
+    fn render<'a>(&'a self, _path: RelativePathBuf, _req: Request<Body>) -> Self::Future<'a> {
+        core::future::ready(Ok(RenderResult {
+            content: Bytes::new(),
+            assets: Default::default(),
+            head: Default::default(),
+        }))
     }
 }
 
 impl<T> Renderer for Arc<T>
 where
     T: Renderer + Send + Sync,
+    for<'a> T: 'a,
 {
     type Error = T::Error;
-    fn render<'a>(
-        &'a self,
-        path: RelativePathBuf,
-        req: Request<Body>,
-    ) -> BoxFuture<'a, Result<RenderResult, Self::Error>> {
+    type Future<'a> = T::Future<'a>;
+    fn render<'a>(&'a self, path: RelativePathBuf, req: Request<Body>) -> Self::Future<'a> {
         (**self).render(path, req)
     }
 }
@@ -64,22 +56,21 @@ where
 impl<T> Renderer for Option<T>
 where
     T: Renderer + Send + Sync,
+    for<'a> T: 'a,
 {
     type Error = T::Error;
-    fn render<'a>(
-        &'a self,
-        path: RelativePathBuf,
-        req: Request<Body>,
-    ) -> BoxFuture<'a, Result<RenderResult, Self::Error>> {
-        Box::pin(async move {
-            match self {
-                Some(ret) => ret.render(path, req).await,
-                None => Ok(RenderResult {
-                    content: Bytes::new(),
-                    assets: Default::default(),
-                    head: Default::default(),
-                }),
-            }
-        })
+    type Future<'a> = futures::future::Either<
+        T::Future<'a>,
+        core::future::Ready<Result<RenderResult, Self::Error>>,
+    >;
+    fn render<'a>(&'a self, path: RelativePathBuf, req: Request<Body>) -> Self::Future<'a> {
+        match self {
+            Some(ret) => futures::future::Either::Left(ret.render(path, req)),
+            None => futures::future::Either::Right(core::future::ready(Ok(RenderResult {
+                content: Bytes::new(),
+                assets: Default::default(),
+                head: Default::default(),
+            }))),
+        }
     }
 }

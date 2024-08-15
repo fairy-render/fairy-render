@@ -1,7 +1,7 @@
 use core::fmt;
 use std::path::PathBuf;
 
-use futures_core::Future;
+use futures::{future::BoxFuture, Future};
 use klaver::{
     pool::Pool,
     quick::{self, CatchResultExt, Class, Ctx, FromJs, Object},
@@ -228,12 +228,13 @@ impl RendererFactory for QuickFactory {
 impl Renderer for Quick {
     type Error = QuickRenderError;
 
+    type Future<'a> = BoxFuture<'a, Result<RenderResult, Self::Error>>;
+
     fn render<'a>(
         &'a self,
         path: RelativePathBuf,
         req: reggie::http::Request<reggie::Body>,
-    ) -> futures_core::future::BoxFuture<'a, Result<crate::renderer::RenderResult, Self::Error>>
-    {
+    ) -> BoxFuture<'a, Result<crate::renderer::RenderResult, Self::Error>> {
         Box::pin(async move {
             let worker = self.worker.get().await.map_err(QuickRenderError::Pool)?;
 
