@@ -59,17 +59,14 @@ impl Fairy {
     pub fn create_renderer<'a>(&self, entry: impl Into<Option<&'a str>>) -> FairyRenderer {
         let entry = entry.into();
 
-        let Some(entry) = self.config.get_entry(entry) else {
+        let Some(_) = self.config.get_entry(entry) else {
             panic!("entry not found: {entry:?}");
         };
 
         FairyRenderer {
             vite: self.vite.clone(),
             vm: self.vm.clone(),
-            entry: ViteEntry {
-                client: entry.client.clone().into(),
-                server: entry.server.clone(),
-            },
+            entry: entry.map(|m| m.to_string()),
         }
     }
 }
@@ -78,11 +75,13 @@ impl Fairy {
 pub struct FairyRenderer {
     pub vite: Arc<Vite>,
     pub vm: Option<Arc<Quick>>,
-    pub entry: ViteEntry,
+    pub entry: Option<String>,
 }
 
 impl FairyRenderer {
     pub async fn render<B: Into<Body>>(&self, req: Request<B>) -> Result<FairyResult, ViteError> {
-        self.vite.render(self.entry.clone(), req, &self.vm).await
+        self.vite
+            .render(self.entry.as_ref().map(|m| m.as_str()), req, &self.vm)
+            .await
     }
 }

@@ -11,11 +11,12 @@ use crate::{
 
 enum Mode {
     Prod(ViteResolver),
-    Dev(ViteConfig),
+    Dev,
 }
 
 pub struct Vite {
     mode: Mode,
+    config: ViteConfig,
 }
 
 impl Vite {
@@ -28,6 +29,7 @@ impl Vite {
 
             Vite {
                 mode: Mode::Prod(resolver),
+                config: config.clone(),
             }
         };
 
@@ -36,13 +38,14 @@ impl Vite {
 
     pub fn dev(config: &ViteConfig) -> Vite {
         Vite {
-            mode: Mode::Dev(config.clone()),
+            mode: Mode::Dev,
+            config: config.clone(),
         }
     }
 
     pub async fn render<B: Into<Body>, R>(
         &self,
-        entry: impl Into<ViteEntry>,
+        entry: Option<&str>,
         req: Request<B>,
         renderer: &R,
     ) -> Result<FairyResult, ViteError>
@@ -50,24 +53,20 @@ impl Vite {
         R: Renderer,
         R::Error: std::error::Error + Send + Sync + 'static,
     {
-        match &self.mode {
-            Mode::Dev(config) => {
-                let entry: ViteEntry = entry.into();
-                let Some(entry) = config.get_entry(entry.client.as_ref().map(|m| m.as_str()))
-                else {
-                    panic!("entry not found: {entry:?}");
-                };
+        let Some(entry) = self.config.get_entry(entry) else {
+            panic!("entry not found: {entry:?}");
+        };
 
-                Ok(FairyResult {
-                    head: Vec::new(),
-                    assets: vec![Asset {
-                        kind: AssetKind::Script,
-                        file: format!("http://localhost:{}/{}", config.port, entry.client),
-                    }],
-                    content: Vec::new(),
-                })
-            }
-            Mode::Prod(resolver) => resolver.render(entry, req, renderer).await,
+        match &self.mode {
+            Mode::Dev => Ok(FairyResult {
+                head: Vec::new(),
+                assets: vec![Asset {
+                    kind: AssetKind::Script,
+                    file: format!("http://localhost:{}/{}", self.config.port, entry.client),
+                }],
+                content: Vec::new(),
+            }),
+            Mode::Prod(resolver) => resolver.render(entry.clone(), req, renderer).await,
         }
     }
 }
