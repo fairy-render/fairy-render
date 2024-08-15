@@ -4,7 +4,8 @@ use fairy_render::Renderer;
 use reggie::{Body, Request};
 
 use crate::{
-    util::load_json, Asset, AssetKind, FairyResult, Manifest, SSRManifest, ViteError, ViteOptions,
+    util::load_json, Asset, AssetKind, Entry, FairyResult, Manifest, SSRManifest, ViteError,
+    ViteOptions,
 };
 
 #[derive(Clone, Debug)]
@@ -25,6 +26,15 @@ impl From<String> for ViteEntry {
 impl<'a> From<&'a str> for ViteEntry {
     fn from(value: &'a str) -> Self {
         value.to_string().into()
+    }
+}
+
+impl From<Entry> for ViteEntry {
+    fn from(value: Entry) -> Self {
+        ViteEntry {
+            client: value.client.into(),
+            server: value.server,
+        }
     }
 }
 
