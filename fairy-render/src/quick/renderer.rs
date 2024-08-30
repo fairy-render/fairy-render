@@ -51,7 +51,7 @@ impl Quick {
             opts = opts.search_path(sp);
         }
 
-        let pool = Pool::builder(klaver::pool::Manager::new(opts).init(move |vm| {
+        let pool = Pool::builder(klaver::pool::Manager::new(opts).unwrap().init(move |vm| {
             let client = client.clone();
             Box::pin(async move {
                 vm.run_with(|ctx| {
