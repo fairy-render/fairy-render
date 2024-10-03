@@ -54,16 +54,19 @@ impl Quick {
         let pool = Pool::builder(klaver::pool::Manager::new(opts).unwrap().init(move |vm| {
             let client = client.clone();
             Box::pin(async move {
-                vm.run_with(|ctx| {
-                    set_client_box(ctx, client)?;
+                vm.with(|ctx| {
+                    set_client_box(&ctx, client)?;
                     Ok(())
                 })
                 .await?;
 
-                klaver_compat::init(vm).await?;
+                klaver::async_with2!(vm => |ctx| {
+                    klaver_compat::init(&ctx).await
+                })
+                .await?;
 
-                vm.run_with(|ctx| {
-                    ctx.eval(GLOBALS)?;
+                vm.with(|ctx| {
+                    ctx.eval::<(), _>(GLOBALS)?;
                     Ok(())
                 })
                 .await?;
@@ -238,7 +241,7 @@ impl Renderer for Quick {
         Box::pin(async move {
             let worker = self.worker.get().await.map_err(QuickRenderError::Pool)?;
 
-            let ret = klaver::async_with!(worker => |ctx| {
+            let ret = klaver::async_with2!(worker => |ctx| {
 
                 let req = klaver_http::Request::from_request(&ctx, req).catch(&ctx)?;
                 Ok(render(&ctx, &path, req).await.catch(&ctx)?)
@@ -259,7 +262,7 @@ pub async fn render<'js>(
 ) -> klaver::quick::Result<RenderResult> {
     let globals = ctx.globals();
     if !globals.contains_key("Fairy")? {
-        ctx.eval(GLOBALS)?;
+        ctx.eval::<(), _>(GLOBALS)?;
     }
 
     let fairy: Object = globals.get("Fairy")?;

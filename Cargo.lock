@@ -838,7 +838,7 @@ dependencies = [
 [[package]]
 name = "klaver"
 version = "0.1.0"
-source = "git+https://github.com/fairy-render/klaver#5863615fd1faf4d5b8527c9291c4c0bc389b8e9e"
+source = "git+https://github.com/fairy-render/klaver#582d855a5d8dfad48704d838b003b7a99d6c654b"
 dependencies = [
  "deadpool",
  "extensions",
@@ -857,7 +857,7 @@ dependencies = [
 [[package]]
 name = "klaver-base"
 version = "0.1.0"
-source = "git+https://github.com/fairy-render/klaver#5863615fd1faf4d5b8527c9291c4c0bc389b8e9e"
+source = "git+https://github.com/fairy-render/klaver#582d855a5d8dfad48704d838b003b7a99d6c654b"
 dependencies = [
  "klaver",
  "rquickjs",
@@ -866,7 +866,7 @@ dependencies = [
 [[package]]
 name = "klaver-compat"
 version = "0.1.0"
-source = "git+https://github.com/fairy-render/klaver#5863615fd1faf4d5b8527c9291c4c0bc389b8e9e"
+source = "git+https://github.com/fairy-render/klaver#582d855a5d8dfad48704d838b003b7a99d6c654b"
 dependencies = [
  "klaver",
  "klaver-base",
@@ -879,7 +879,7 @@ dependencies = [
 [[package]]
 name = "klaver-crypto"
 version = "0.1.0"
-source = "git+https://github.com/fairy-render/klaver#5863615fd1faf4d5b8527c9291c4c0bc389b8e9e"
+source = "git+https://github.com/fairy-render/klaver#582d855a5d8dfad48704d838b003b7a99d6c654b"
 dependencies = [
  "klaver",
  "klaver-shared",
@@ -894,7 +894,7 @@ dependencies = [
 [[package]]
 name = "klaver-encoding"
 version = "0.1.0"
-source = "git+https://github.com/fairy-render/klaver#5863615fd1faf4d5b8527c9291c4c0bc389b8e9e"
+source = "git+https://github.com/fairy-render/klaver#582d855a5d8dfad48704d838b003b7a99d6c654b"
 dependencies = [
  "base64",
  "encoding_rs",
@@ -906,7 +906,7 @@ dependencies = [
 [[package]]
 name = "klaver-http"
 version = "0.1.0"
-source = "git+https://github.com/fairy-render/klaver#5863615fd1faf4d5b8527c9291c4c0bc389b8e9e"
+source = "git+https://github.com/fairy-render/klaver#582d855a5d8dfad48704d838b003b7a99d6c654b"
 dependencies = [
  "bytes",
  "futures",
@@ -924,7 +924,7 @@ dependencies = [
 [[package]]
 name = "klaver-shared"
 version = "0.1.0"
-source = "git+https://github.com/fairy-render/klaver#5863615fd1faf4d5b8527c9291c4c0bc389b8e9e"
+source = "git+https://github.com/fairy-render/klaver#582d855a5d8dfad48704d838b003b7a99d6c654b"
 dependencies = [
  "futures",
  "rquickjs",
@@ -933,7 +933,7 @@ dependencies = [
 [[package]]
 name = "klaver-streams"
 version = "0.1.0"
-source = "git+https://github.com/fairy-render/klaver#5863615fd1faf4d5b8527c9291c4c0bc389b8e9e"
+source = "git+https://github.com/fairy-render/klaver#582d855a5d8dfad48704d838b003b7a99d6c654b"
 dependencies = [
  "async-stream",
  "futures",
