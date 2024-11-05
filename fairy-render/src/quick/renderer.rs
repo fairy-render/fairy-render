@@ -3,11 +3,13 @@ use std::path::PathBuf;
 
 use futures::{future::BoxFuture, Future};
 use klaver::{
-    pool::Pool,
-    quick::{self, CatchResultExt, Class, Ctx, FromJs, Object},
-    vm::VmOptions,
+    pool::{Pool, VmPoolOptions},
+    Options,
 };
-use klaver_http::set_client_box;
+
+use klaver_wintercg::WinterCG;
+use rquickjs::{self as quick, CatchResultExt, Class, Ctx, FromJs, Object};
+
 use reggie::SharedClientFactory;
 use relative_path::{RelativePath, RelativePathBuf};
 
@@ -45,35 +47,36 @@ pub struct Quick {
 
 impl Quick {
     pub fn new(client: SharedClientFactory, search_paths: Vec<PathBuf>) -> Quick {
-        let mut opts = VmOptions::default().module::<klaver_compat::Compat>();
+        let mut opts = Options::default();
 
         for sp in search_paths {
             opts = opts.search_path(sp);
         }
 
-        let pool = Pool::builder(klaver::pool::Manager::new(opts).unwrap().init(move |vm| {
-            let client = client.clone();
-            Box::pin(async move {
-                vm.with(|ctx| {
-                    set_client_box(&ctx, client)?;
+        let pool_options = VmPoolOptions::from(opts).unwrap();
+
+        let pool = Pool::builder(klaver::pool::Manager::new(pool_options).unwrap().init(
+            move |vm| {
+                let client = client.clone();
+                Box::pin(async move {
+                    klaver::async_with!(vm => |ctx| {
+                        let winter = WinterCG::get(&ctx).await?;
+                        winter.borrow_mut().set_http_client(client.create());
+
+                        Ok(())
+
+                    })
+                    .await?;
+
+                    vm.with(|ctx| {
+                        ctx.eval::<(), _>(GLOBALS)?;
+                        Ok(())
+                    })
+                    .await?;
                     Ok(())
                 })
-                .await?;
-
-                klaver::async_with2!(vm => |ctx| {
-                    klaver_compat::init(&ctx).await
-                })
-                .await?;
-
-                vm.with(|ctx| {
-                    ctx.eval::<(), _>(GLOBALS)?;
-                    Ok(())
-                })
-                .await?;
-
-                Ok(())
-            })
-        }))
+            },
+        ))
         .build()
         .unwrap();
 
@@ -167,13 +170,13 @@ impl std::error::Error for ScriptError {}
 
 #[derive(Debug)]
 pub enum QuickRenderError {
-    Engine(klaver::Error),
+    Engine(klaver::RuntimeError),
     Pool(klaver::pool::PoolError),
     Script(ScriptError),
 }
 
-impl From<klaver::Error> for QuickRenderError {
-    fn from(value: klaver::Error) -> Self {
+impl From<klaver::RuntimeError> for QuickRenderError {
+    fn from(value: klaver::RuntimeError) -> Self {
         QuickRenderError::Engine(value)
     }
 }
@@ -218,7 +221,7 @@ impl QuickFactory {
 impl RendererFactory for QuickFactory {
     type Renderer = Quick;
 
-    type Error = klaver::Error;
+    type Error = klaver::RuntimeError;
 
     fn create(
         &self,
@@ -241,11 +244,12 @@ impl Renderer for Quick {
         Box::pin(async move {
             let worker = self.worker.get().await.map_err(QuickRenderError::Pool)?;
 
-            let ret = klaver::async_with2!(worker => |ctx| {
+            println!("HER");
 
-                let req = klaver_http::Request::from_request(&ctx, req).catch(&ctx)?;
+            let ret = klaver::async_with!(worker => |ctx| {
+
+                let req = klaver_wintercg::http::Request::from_request(&ctx, req).catch(&ctx)?;
                 Ok(render(&ctx, &path, req).await.catch(&ctx)?)
-
 
             })
             .await?;
@@ -258,8 +262,8 @@ impl Renderer for Quick {
 pub async fn render<'js>(
     ctx: &Ctx<'js>,
     path: &RelativePath,
-    req: Class<'js, klaver_http::Request<'js>>,
-) -> klaver::quick::Result<RenderResult> {
+    req: Class<'js, klaver_wintercg::http::Request<'js>>,
+) -> quick::Result<RenderResult> {
     let globals = ctx.globals();
     if !globals.contains_key("Fairy")? {
         ctx.eval::<(), _>(GLOBALS)?;

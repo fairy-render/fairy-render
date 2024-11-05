@@ -30,7 +30,16 @@
 		},
 	};
 
+	const ofetch = global.fetch;
+
 	Object.defineProperty(global, "Fairy", {
 		value: Fairy,
+		fetch: (url, opts) => {
+			if (typeof url === "string" && url.startsWith("/")) {
+				url = `internal://internal${url}`;
+			}
+
+			return ofetch(url, opts);
+		},
 	});
 })(globalThis);
