@@ -55,28 +55,31 @@ impl Quick {
 
         let pool_options = VmPoolOptions::from(opts).unwrap();
 
-        let pool = Pool::builder(klaver::pool::Manager::new(pool_options).unwrap().init(
-            move |vm| {
-                let client = client.clone();
-                Box::pin(async move {
-                    klaver::async_with!(vm => |ctx| {
-                        let winter = WinterCG::get(&ctx).await?;
-                        winter.borrow_mut().set_http_client(client.create());
+        let pool = Pool::builder(
+            klaver::pool::Manager::new(pool_options)
+                .unwrap()
+                .use_worker_thread()
+                .init(move |vm| {
+                    let client = client.clone();
+                    Box::pin(async move {
+                        klaver::async_with!(vm => |ctx| {
+                            let winter = WinterCG::get(&ctx).await?;
+                            winter.borrow_mut().set_http_client(client.create());
 
+                            Ok(())
+
+                        })
+                        .await?;
+
+                        vm.with(|ctx| {
+                            ctx.eval::<(), _>(GLOBALS)?;
+                            Ok(())
+                        })
+                        .await?;
                         Ok(())
-
                     })
-                    .await?;
-
-                    vm.with(|ctx| {
-                        ctx.eval::<(), _>(GLOBALS)?;
-                        Ok(())
-                    })
-                    .await?;
-                    Ok(())
-                })
-            },
-        ))
+                }),
+        )
         .build()
         .unwrap();
 
@@ -243,8 +246,6 @@ impl Renderer for Quick {
     ) -> BoxFuture<'a, Result<crate::renderer::RenderResult, Self::Error>> {
         Box::pin(async move {
             let worker = self.worker.get().await.map_err(QuickRenderError::Pool)?;
-
-            println!("HER");
 
             let ret = klaver::async_with!(worker => |ctx| {
 

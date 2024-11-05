@@ -1,6 +1,6 @@
 use std::{convert::Infallible, sync::Arc};
 
-use futures::{future::BoxFuture, Future};
+use futures::Future;
 use reggie::{bytes::Bytes, http::Request, Body, SharedClientFactory};
 use relative_path::RelativePathBuf;
 

@@ -4,6 +4,7 @@ use std::pin::Pin;
 use std::sync::Arc;
 use std::task::Poll;
 
+use axum::http::Uri;
 use fairy_render::quick::Quick;
 use fairy_vite::{FairyRenderer, Vite, ViteEntry};
 use reggie::bytes::Bytes;
@@ -116,11 +117,17 @@ where
         Poll::Ready(Ok(()))
     }
 
-    fn call(&mut self, req: Request<B>) -> Self::Future {
+    fn call(&mut self, mut req: Request<B>) -> Self::Future {
         let quick = self.fairy.clone();
         let template = self.template.clone();
         Box::pin(async move {
             let uri = req.uri().clone();
+
+            if req.uri().scheme().is_none() {
+                *req.uri_mut() = format!("internal://internal.com{}", uri)
+                    .parse()
+                    .expect("url");
+            }
 
             let result = quick
                 .render(req.map(|m| {

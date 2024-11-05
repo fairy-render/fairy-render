@@ -22,7 +22,7 @@ klaver = { git = "https://github.com/fairy-render/klaver", features = [
   "pool",
   "http",
   "encoding",
-  "transform",
+  # "transform",
   "crypto",
 ], branch = "v2" }
 klaver-wintercg = { git = "https://github.com/fairy-render/klaver", branch = "v2" }
@@ -38,6 +38,7 @@ reggie = { git = "https://github.com/fairy-render/reggie", features = [
   "json",
   "reqwest",
 ] }
+tracing-subscriber = "*"
 
 
 [[example]]

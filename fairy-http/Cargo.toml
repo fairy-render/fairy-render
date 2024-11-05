@@ -27,3 +27,5 @@ reggie = { git = "https://github.com/fairy-render/reggie", features = [
   "json",
   "reqwest",
 ] }
+
+tracing-subscriber = { version = "0.3", features = ["tracing-log"] }
