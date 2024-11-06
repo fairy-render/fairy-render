@@ -24,9 +24,8 @@ klaver = { git = "https://github.com/fairy-render/klaver", features = [
   "encoding",
   # "transform",
   "crypto",
-], branch = "v2" }
-klaver-wintercg = { git = "https://github.com/fairy-render/klaver", branch = "v2" }
-
+] }
+klaver-wintercg = { git = "https://github.com/fairy-render/klaver" }
 rquickjs = { version = "0.6" }
 # klaver-compat = { git = "https://github.com/fairy-render/klaver" }
 # klaver-http = { git = "https://github.com/fairy-render/klaver" }

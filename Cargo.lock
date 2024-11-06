@@ -989,7 +989,7 @@ dependencies = [
 [[package]]
 name = "klaver"
 version = "0.2.0"
-source = "git+https://github.com/fairy-render/klaver?branch=v2#fe7930bae26e9d1be7a52bbf54f9260570b86130"
+source = "git+https://github.com/fairy-render/klaver#fdc2b914be9c3e1cdfec7d6ce3a4bc5dc926f51b"
 dependencies = [
  "deadpool",
  "futures",
@@ -1003,7 +1003,7 @@ dependencies = [
 [[package]]
 name = "klaver-wintercg"
 version = "0.1.0"
-source = "git+https://github.com/fairy-render/klaver?branch=v2#fe7930bae26e9d1be7a52bbf54f9260570b86130"
+source = "git+https://github.com/fairy-render/klaver#fdc2b914be9c3e1cdfec7d6ce3a4bc5dc926f51b"
 dependencies = [
  "async-stream",
  "async-trait",
@@ -1542,14 +1542,13 @@ dependencies = [
 [[package]]
 name = "rquickjs-modules"
 version = "0.1.0"
-source = "git+https://github.com/fairy-render/klaver?branch=v2#fe7930bae26e9d1be7a52bbf54f9260570b86130"
+source = "git+https://github.com/fairy-render/klaver#fdc2b914be9c3e1cdfec7d6ce3a4bc5dc926f51b"
 dependencies = [
  "oxc_resolver",
  "parking_lot",
  "relative-path",
  "rquickjs",
  "rquickjs-util",
- "samling",
  "tracing",
 ]
 
@@ -1565,7 +1564,7 @@ dependencies = [
 [[package]]
 name = "rquickjs-util"
 version = "0.1.0"
-source = "git+https://github.com/fairy-render/klaver?branch=v2#fe7930bae26e9d1be7a52bbf54f9260570b86130"
+source = "git+https://github.com/fairy-render/klaver#fdc2b914be9c3e1cdfec7d6ce3a4bc5dc926f51b"
 dependencies = [
  "chrono",
  "futures",
@@ -1657,21 +1656,6 @@ name = "ryu"
 version = "1.0.18"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f3cb5ba0dc43242ce17de99c180e96db90b235b8a9fdc9543c96d2209116bd9f"
-
-[[package]]
-name = "samling"
-version = "0.1.0"
-source = "git+https://github.com/fairy-render/samling#e42fc9b73b3f7e1a7697690f781d227e410b1627"
-dependencies = [
- "async-stream",
- "bytes",
- "futures",
- "mime",
- "mime_guess",
- "relative-path",
- "serde",
- "url",
-]
 
 [[package]]
 name = "schannel"
