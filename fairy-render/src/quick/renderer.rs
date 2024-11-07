@@ -58,7 +58,7 @@ impl Quick {
         let pool = Pool::builder(
             klaver::pool::Manager::new(pool_options)
                 .unwrap()
-                .use_worker_thread()
+                // .use_worker_thread()
                 .init(move |vm| {
                     let client = client.clone();
                     Box::pin(async move {
