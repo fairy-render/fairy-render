@@ -63,7 +63,7 @@ impl Quick {
                     let client = client.clone();
                     Box::pin(async move {
                         klaver::async_with!(vm => |ctx| {
-                            let winter = WinterCG::get(&ctx).await?;
+                            let winter = WinterCG::get(&ctx).await.catch(&ctx)?;
                             winter.borrow_mut().set_http_client(client.create());
 
                             Ok(())
@@ -72,7 +72,7 @@ impl Quick {
                         .await?;
 
                         vm.with(|ctx| {
-                            ctx.eval::<(), _>(GLOBALS)?;
+                            ctx.eval::<(), _>(GLOBALS).catch(&ctx)?;
                             Ok(())
                         })
                         .await?;
