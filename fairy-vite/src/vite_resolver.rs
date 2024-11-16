@@ -74,13 +74,13 @@ impl ViteResolver {
             };
 
             assets.push(Asset {
-                file: client_entry.file.clone(),
+                file: format!("/{}", client_entry.file),
                 kind: AssetKind::Script,
             });
 
             for css in &client_entry.css {
                 assets.push(Asset {
-                    file: css.clone(),
+                    file: format!("/{}", css),
                     kind: AssetKind::Styling,
                 });
             }
@@ -107,8 +107,8 @@ impl ViteResolver {
                     _ => AssetKind::Unknown,
                 };
 
-                let file = if file.starts_with("/") {
-                    file.chars().skip(1).collect::<String>()
+                let file = if !file.starts_with("/") {
+                    format!("/{}", file)
                 } else {
                     file.clone()
                 };
