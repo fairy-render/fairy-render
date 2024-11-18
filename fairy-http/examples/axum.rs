@@ -33,7 +33,7 @@ markup::define! {
                 @for file in &req.assets {
                     @match file.kind {
                         AssetKind::Script => {
-                            script[src= format!("/{}", &file.file), type="module"] {  }
+                            script[src= format!("{}", &file.file), type="module"] {  }
                         }
                         _ => {
                             "Not"
