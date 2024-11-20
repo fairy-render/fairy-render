@@ -16,7 +16,7 @@ async fn main() {
         .render(
             "./packages/solid-example/dist/server/entry-server.js".into(),
             Request::builder()
-                .uri("http://internal/")
+                .uri("http://internal/subpage")
                 .body(Body::empty())
                 .unwrap(),
         )
