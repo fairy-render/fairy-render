@@ -1,9 +1,6 @@
 ((global) => {
   const files = [];
   const Fairy = {
-    import: async (fn, key) => {
-      return [await fn(), key];
-    },
     runMain: async (path, ...args) => {
       files.length = 0;
 
@@ -33,6 +30,9 @@
   };
 
   Object.defineProperty(global, "Fairy", {
-    value: Fairy,
+    value: Object.freeze(Fairy),
+    configurable: false,
+    enumerable: false,
+    writable: false,
   });
 })(globalThis);

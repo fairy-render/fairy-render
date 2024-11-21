@@ -19,7 +19,7 @@ export function render(
   return hydrate(app, element);
 }
 
-export function lazy<T extends Component<any>>(
+export function lazy<T extends Component>(
   fn: () => Promise<{
     default: T;
   }>
@@ -30,12 +30,13 @@ export function lazy<T extends Component<any>>(
 } {
   if (isServer) {
     return serverLazy(fn);
+    // biome-ignore lint/style/noUselessElse: <explanation>
   } else {
     return solidLazy(fn);
   }
 }
 
-function serverLazy<T extends Component<any>>(
+function serverLazy<T extends Component>(
   fn: () => Promise<{
     default: T;
   }>
