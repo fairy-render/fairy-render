@@ -565,9 +565,6 @@ dependencies = [
  "reggie",
  "relative-path",
  "rquickjs",
- "serde",
- "serde_json",
- "thiserror 1.0.69",
  "tokio",
  "tracing-subscriber",
 ]
@@ -581,7 +578,7 @@ dependencies = [
  "relative-path",
  "serde",
  "serde_json",
- "thiserror 1.0.69",
+ "thiserror 2.0.3",
  "tokio",
 ]
 

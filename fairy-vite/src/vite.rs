@@ -5,7 +5,7 @@ use crate::{
     error::ViteError,
     result::{Asset, AssetKind, FairyResult},
     vite_options::ViteOptions,
-    vite_resolver::{ViteEntry, ViteResolver},
+    vite_resolver::ViteResolver,
     ViteConfig,
 };
 

@@ -38,7 +38,7 @@ impl ViteConfig {
         self.root().join("client").join(&self.assets)
     }
 
-    /// The build root
+    /// The build root (eg. dist)
     pub fn root(&self) -> PathBuf {
         self.work_dir().join(&self.root)
     }

@@ -27,7 +27,7 @@ struct JsResult {
 }
 
 impl<'js> FromJs<'js> for JsResult {
-    fn from_js(ctx: &Ctx<'js>, value: quick::Value<'js>) -> quick::Result<Self> {
+    fn from_js(_ctx: &Ctx<'js>, value: quick::Value<'js>) -> quick::Result<Self> {
         let Ok(obj) = value.try_into_object() else {
             return Err(quick::Error::new_from_js("value", "object"));
         };

@@ -1,9 +1,6 @@
 use std::{collections::hash_map::Keys, sync::Arc};
 
-use crate::{
-    config::ViteConfig, vite::Vite, vite_resolver::ViteEntry, Entry, EntryValue, FairyResult,
-    ViteError,
-};
+use crate::{config::ViteConfig, vite::Vite, Entry, EntryValue, FairyResult, ViteError};
 use fairy_render::{
     quick::{Quick, QuickFactory},
     RendererFactory,

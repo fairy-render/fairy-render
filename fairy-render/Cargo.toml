@@ -4,20 +4,11 @@ version = "0.1.0"
 edition = "2021"
 
 [features]
-# reqwest = ["reggie/reqwest", "dep:reqwest"]
 
 [dependencies]
 reggie = { git = "https://github.com/fairy-render/reggie", features = ["json"] }
 futures = { version = "0.3", default-features = false }
-
-serde = { version = "1", features = ["derive"] }
-serde_json = { version = "1" }
-thiserror = { version = "1" }
 relative-path = { version = "1" }
-# reqwest = { version = "0.12", optional = true }
-
-tokio = { version = "1", default-features = false, features = ["fs"] }
-
 klaver = { git = "https://github.com/fairy-render/klaver", features = [
   "pool",
   "http",
@@ -26,8 +17,6 @@ klaver = { git = "https://github.com/fairy-render/klaver", features = [
 ] }
 klaver-wintercg = { git = "https://github.com/fairy-render/klaver" }
 rquickjs = { version = "0.8" }
-# klaver-compat = { git = "https://github.com/fairy-render/klaver" }
-# klaver-http = { git = "https://github.com/fairy-render/klaver" }
 
 
 [dev-dependencies]

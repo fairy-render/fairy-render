@@ -7,7 +7,6 @@ use fairy_render::reggie::{Body, HttpClient, HttpClientFactory};
 use fairy_vite::ViteConfig;
 use fairy_vite::{AssetKind, FairyResult, ViteError};
 use futures::future::BoxFuture;
-use tracing_subscriber::filter::LevelFilter;
 
 markup::define! {
     Home(req: FairyResult) {
@@ -120,10 +119,6 @@ async fn main() {
         .await
         .unwrap();
 
-    let react_config = ViteConfig::load(Path::new("react-config.json"))
-        .await
-        .unwrap();
-
     let fetcher = Fetcher {
         client: reqwest::Client::new(),
     };
@@ -133,19 +128,7 @@ async fn main() {
         .await
         .unwrap();
 
-    // let react = react_config
-    //     .build(T, fetcher.clone(), RouteMap::default())
-    //     .await;
-    // let react = react_config
-    //     .build_dev(T, RouteMap::default())
-    //     .await
-    //     .unwrap();
-
-    // let service = vite_config.build_dev(T, RouteMap::default()).unwrap();
-
     app = app.route("/api/message", get(api)).fallback_service(solid);
-    // .nest_service("/solid", solid)
-    // .nest_service("/react", react);
 
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
     axum::serve(listener, app).await.unwrap();
