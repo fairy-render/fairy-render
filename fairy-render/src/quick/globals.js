@@ -1,9 +1,8 @@
 ((global) => {
   const files = [];
   const Fairy = {
-    import: (fn, key) => {
-      files.push(key);
-      return fn();
+    import: async (fn, key) => {
+      return [await fn(), key];
     },
     runMain: async (path, ...args) => {
       files.length = 0;
@@ -27,6 +26,9 @@
         ...ret,
         files: files.slice(),
       };
+    },
+    pushFile(path) {
+      files.push(path);
     },
   };
 
