@@ -19,9 +19,20 @@ markup::define! {
                     "body { background: #fafbfc; }"
                     "#main { padding: 2rem; }"
                 }
+                @for file in &req.assets {
+                    @match file.kind {
+                        AssetKind::Styling => {
+                            link[href= format!("{}", &file.file), rel="stylesheet", class="en klasse"] {  }
+                        }
+                        _ => {
+                            ""
+                        }
+                    }
+                }
                 @for head in &req.head {
                     @markup::raw(head)
                 }
+
 
             }
             body {
@@ -36,7 +47,7 @@ markup::define! {
                             script[src= format!("{}", &file.file), type="module"] {  }
                         }
                         _ => {
-                            "Not"
+                            ""
                         }
                     }
                 }
@@ -99,9 +110,9 @@ async fn api() -> &'static str {
 
 #[tokio::main(flavor = "multi_thread")]
 async fn main() {
-    tracing_subscriber::fmt()
-        .with_max_level(LevelFilter::TRACE)
-        .init();
+    // tracing_subscriber::fmt()
+    //     .with_max_level(LevelFilter::TRACE)
+    //     .init();
 
     let mut app = Router::new();
 
@@ -178,7 +189,7 @@ where
         request: axum::http::Request<B>,
     ) -> BoxFuture<'a, Result<axum::http::Response<Self::Body>, fairy_render::reggie::Error>> {
         Box::pin(async move {
-            if request.uri().scheme().is_none() {
+            if request.uri().scheme_str() == Some("internal") {
                 return Ok(fairy_render::reggie::http::Response::builder()
                     .body(Body::from(String::from("Hello, World!")))
                     .unwrap());
