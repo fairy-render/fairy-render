@@ -1,13 +1,11 @@
 {
-	"name": "fairy-render",
-	"private": true,
-	"scripts": {
-		"build": "pnpm run -r --filter @fairy-render/* build",
-		"watch": "pnpm run -r --filter @fairy-render/* watch",
-		"build-example": "pnpm run -r --filter solid-example build; pnpm run -r --filter react-example build",
-		"watch-example": "pnpm run -r --filter react-example dev"
-	},
-	"dependencies": {
-		"typescript": "^5.2.2"
-	}
+  "name": "fairy-render",
+  "private": true,
+  "scripts": {
+    "build": "pnpm run -r --filter solid-example build",
+    "watch": "pnpm run -r --filter solid-example dev"
+  },
+  "dependencies": {
+    "typescript": "^5.2.2"
+  }
 }

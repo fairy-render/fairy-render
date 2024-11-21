@@ -8,11 +8,11 @@
     "fairy": "fairy"
   },
   "devDependencies": {
-    "@fairy-render/build": "workspace:^",
+    "@fairy-render/build": "0.0.4",
     "typescript": "^5.0.2"
   },
   "dependencies": {
-    "@fairy-render/solid": "workspace:^",
+    "@fairy-render/solid": "0.0.2",
     "@solidjs/router": "^0.15.1",
     "solid-js": "^1.9.3"
   }

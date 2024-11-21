@@ -30,7 +30,7 @@ function Index() {
 
   return (
     <div>
-      <A href="/solid/subpage">Subpage</A>
+      <A href="/subpage">Subpage</A>
       <div>Hello, World!: Show</div>
       <Suspense>
         <For each={res()?.products}>
